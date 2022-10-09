@@ -31,18 +31,27 @@ int main(void){
 
 	/*SanaeFile*/
 	file _file = "SanaeProject.log";
+	
 	_file.write("Copyright 2016");
+	
 	_file.add(" SanaeProject.");
+	
 	str text;
+	
 	_file.read(&text);
+	
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
 
 	/*SanaeMath*/
 	printf("%u\n",exponentiation((UINT)2, 5));  //32
+
 	printf("%d\n",is_primenum(11));             //true(1)
+	
 	printf("2^1/2=%lf\n",root(2,2,3));          //2^1/2=1.414
+	
 	printf("2^1/2=%lf\n",root(2,2,6));          //2^1/2=1.414213
+	
 	printf("2^1/5=%lf\n",root(2,5,3));          //2^1/5=1.148
 
 
