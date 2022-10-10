@@ -120,7 +120,7 @@ bool to_char(STRC* str,const wchar_t *text) {
 	size_t err = 0;
 	size_t buffer = wcslen(text) + 1;
 
-	if (!ALLOC(str, buffer*sizeof(wchar_t)))return false;
+	if (!ALLOC(str, (UINT)buffer*(UINT)sizeof(wchar_t)))return false;
 
 	wcstombs_s(&err, str->str, str->alloced, text, _TRUNCATE);
 	return true;

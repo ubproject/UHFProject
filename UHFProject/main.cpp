@@ -2,6 +2,6 @@
 
 int main(void){
 
-	printf("%lf", exponentiation(9,0.125));
+	printf("%lf", exponentiation(9,0.5));
 	return 0;
 }

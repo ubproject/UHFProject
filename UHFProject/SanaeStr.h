@@ -193,7 +193,7 @@ public:
 	}
 	UINT count(const char* data) {
 		UINT retdata = 0;
-		UINT datalen = strlen(data);
+		UINT datalen = (UINT)strlen(data);
 		for (UINT i = 0; i < STR.alloced;i++) {
 			if (STR.str[i]==data[0]) {
 				for (UINT j = 0; j < datalen;j++) {
@@ -272,7 +272,7 @@ public:
 		while ((i = this->find(divchr)) !=-1) {
 			STRC buf STRC_init;
 			SUBSTRC(&buf, &STR, {0,(UINT)i-1});
-			this->erase_front(i);
+			this->erase_front((UINT)i);
 			str bufstr = buf.str;
 			to->push_back(bufstr);
 			STRC_fin(buf);

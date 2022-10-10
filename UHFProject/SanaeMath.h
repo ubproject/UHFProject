@@ -83,11 +83,11 @@ double exponentiation(double from, double count) {
 	fraction b = {0,0};
 	
 	for (b.denominator = 1; ((count * b.denominator) - (UINT)(b.denominator * count)) != 0; b.denominator *= 10);
-	b.molecule = count * b.denominator;
+	b.molecule = (UINT)count * b.denominator;
 	to_min(b);
 
 	/*2^0.5=2^5/10*/
-	UINT d = exponentiation(from,b.molecule);
+	UINT d = (UINT)exponentiation(from,b.molecule);
 	return root(d,b.denominator,3);
 }
 
@@ -96,23 +96,23 @@ double exponentiation(double from, double count) {
 fraction& to_min(fraction& data) {
 	double buf = (double)data.molecule / (double)data.denominator;
 	if (buf == (UINT)buf) {
-		data.molecule = buf;
+		data.molecule = (UINT)buf;
 		data.denominator = 1;
 		return data;
 	}
 	buf = (double)data.denominator / (double)data.molecule;
 	if (buf == (UINT)buf) {
 		data.molecule = 1;
-		data.denominator = buf;
+		data.denominator = (UINT)buf;
 		return data;
 	}
 	for (double i = 2; i < data.denominator && i < data.molecule; i++) {
 		double bufden = data.denominator / i;
-		double bufmol = data.molecule / i;
+		double bufmol = data.molecule    / i;
 
 		if ((bufden - (UINT)bufden) == 0 && (bufmol - (UINT)bufmol) == 0) {
-			data.denominator /= i;
-			data.molecule /= i;
+			data.denominator /= (UINT)i;
+			data.molecule    /= (UINT)i;
 		}
 	}
 	return data;
@@ -121,7 +121,7 @@ fraction& to_min(fraction& data) {
 
 /*•ª”‚ÌŒvŽZ‚ðs‚¢‚Ü‚·B*/
 double fraction_num(fraction data) {
-	return data.molecule / data.denominator;
+	return (double)data.molecule / (double)data.denominator;
 }
 
 
