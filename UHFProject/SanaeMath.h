@@ -12,17 +12,36 @@ typedef unsigned int  UINT;
 typedef unsigned char MINI;
 typedef long long     long64;
 
+/*整数を配列へ変換する際に使用する。*/
 typedef struct {
 	UINT* data;
 	UINT len;
 }NUMS;
 
+/*分数処理を行う際に使用する。*/
+typedef struct {
+	//分子
+	UINT molecule;
+	//分母
+	UINT denominator;
+}fraction;
+
 
 /*Define Function*/
+/*累乗の計算*/
 UINT   exponentiation(UINT  , UINT);
 double exponentiation(double, UINT);
+double exponentiation(double from, double count);
+
+/*分数の計算*/
+fraction& to_min(fraction&);
+double    fraction_num(fraction);
+
+/*素数判定*/
 bool   is_primenum   (UINT);
+/*累乗根の計算*/
 double root    (UINT ,MINI,MINI);
+/*整数を配列へ変換*/
 void   SFREE   (NUMS*);
 bool   to_array(NUMS*,UINT);
 UINT   getnum  (UINT ,UINT);
@@ -32,6 +51,7 @@ UINT   getnum  (UINT ,UINT);
 fromをcount回かけた数を返します。
 */
 UINT exponentiation(UINT from, UINT count) {
+	if (count == 0)return 1;
 	UINT retdata = from;
 	for (UINT i = 1; i < count; i++) {
 		retdata *= from;
@@ -44,11 +64,64 @@ UINT exponentiation(UINT from, UINT count) {
 fromをcount回かけた数を返します。
 */
 double exponentiation(double from, UINT count) {
+	if (count == 0)return 1;
 	double retdata = from;
 	for (UINT i = 1; i < count; i++) {
 		retdata *= from;
 	}
 	return retdata;
+}
+
+
+/*累乗の計算をします。(double)
+fromをcount(double)回かけた数を返します。
+*/
+double exponentiation(double from, double count) {
+	if (count == 0)return 1;
+	double retdata = from;
+	/*分母分子を決定*/
+	fraction b = {0,0};
+	
+	for (b.denominator = 1; ((count * b.denominator) - (UINT)(b.denominator * count)) != 0; b.denominator *= 10);
+	b.molecule = count * b.denominator;
+	to_min(b);
+
+	/*2^0.5=2^5/10*/
+	UINT d = exponentiation(from,b.molecule);
+	return root(d,b.denominator,3);
+}
+
+
+/*約分を行います。*/
+fraction& to_min(fraction& data) {
+	double buf = (double)data.molecule / (double)data.denominator;
+	if (buf == (UINT)buf) {
+		data.molecule = buf;
+		data.denominator = 1;
+		return data;
+	}
+	buf = (double)data.denominator / (double)data.molecule;
+	if (buf == (UINT)buf) {
+		data.molecule = 1;
+		data.denominator = buf;
+		return data;
+	}
+	for (double i = 2; i < data.denominator && i < data.molecule; i++) {
+		double bufden = data.denominator / i;
+		double bufmol = data.molecule / i;
+
+		if ((bufden - (UINT)bufden) == 0 && (bufmol - (UINT)bufmol) == 0) {
+			data.denominator /= i;
+			data.molecule /= i;
+		}
+	}
+	return data;
+}
+
+
+/*分数の計算を行います。*/
+double fraction_num(fraction data) {
+	return data.molecule / data.denominator;
 }
 
 
@@ -70,19 +143,19 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 	/*一桁目を見つける*/
 	double retdata = 0;
 	for (UINT i = 1; i <= data; i++) {
-		if (exponentiation(i, rootnum) == data) {
+		if (exponentiation(i, (UINT)rootnum) == data) {
 			retdata = i;
 			return retdata;
 		}
-		else if (exponentiation(i, rootnum) > data) {
+		else if (exponentiation(i, (UINT)rootnum) > data) {
 			retdata = (i - 1);
 			break;
 		}
 	}
 	/*細かい桁を見つける*/
-	for (double digit = 0.1; digit > (1 / (exponentiation((double)10, digitnum))); digit *= 0.1) {
+	for (double digit = 0.1; digit > (1 / (exponentiation((UINT)10, (UINT)digitnum))); digit *= 0.1) {
 		for (double num = 0 * digit; num <= (9 * digit); num += (1 * digit)) {
-			if ((exponentiation(retdata + num, rootnum)) >= data) {
+			if ((exponentiation((double)retdata + num, (UINT)rootnum)) >= data) {
 				num -= 1 * digit;
 				retdata += num;
 				break;
