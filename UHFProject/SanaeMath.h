@@ -83,7 +83,8 @@ double exponentiation(double from, double count) {
 	fraction b = {0,0};
 	
 	for (b.denominator = 1; ((count * b.denominator) - (UINT)(b.denominator * count)) != 0; b.denominator *= 10);
-	b.molecule = (UINT)count * b.denominator;
+	b.molecule = (UINT)((double)count * (double)b.denominator);
+
 	to_min(b);
 
 	/*2^0.5=2^5/10*/
