@@ -31,7 +31,7 @@ typedef struct {
 /*—Ýæ‚ÌŒvŽZ*/
 UINT   exponentiation(UINT  , UINT);
 double exponentiation(double, UINT);
-double exponentiation(double from, double count);
+double exponentiation(double from, double count,UINT);
 
 /*•ª”‚ÌŒvŽZ*/
 fraction& to_min(fraction&);
@@ -76,20 +76,19 @@ double exponentiation(double from, UINT count) {
 /*—Ýæ‚ÌŒvŽZ‚ð‚µ‚Ü‚·B(double)
 from‚ðcount(double)‰ñ‚©‚¯‚½”‚ð•Ô‚µ‚Ü‚·B
 */
-double exponentiation(double from, double count) {
+double exponentiation(double from, double count,UINT digitnum=3) {
 	if (count == 0)return 1;
 	double retdata = from;
 	/*•ª•ê•ªŽq‚ðŒˆ’è*/
 	fraction b = {0,0};
 	
-	for (b.denominator = 1; ((count * b.denominator) - (UINT)(b.denominator * count)) != 0; b.denominator *= 10);
+	for (b.denominator = 1; ((count * b.denominator) - (UINT)(count*b.denominator)) != 0; b.denominator *= 10);
 	b.molecule = (UINT)((double)count * (double)b.denominator);
 
 	to_min(b);
 
-	/*2^0.5=2^5/10*/
 	UINT d = (UINT)exponentiation(from,b.molecule);
-	return root(d,b.denominator,3);
+	return root(d,b.denominator,digitnum);
 }
 
 
@@ -114,6 +113,7 @@ fraction& to_min(fraction& data) {
 		if ((bufden - (UINT)bufden) == 0 && (bufmol - (UINT)bufmol) == 0) {
 			data.denominator /= (UINT)i;
 			data.molecule    /= (UINT)i;
+			i = 2;
 		}
 	}
 	return data;
@@ -154,7 +154,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 		}
 	}
 	/*×‚©‚¢Œ…‚ðŒ©‚Â‚¯‚é*/
-	for (double digit = 0.1; digit > (1 / (exponentiation((UINT)10, (UINT)digitnum))); digit *= 0.1) {
+	for (double digit = 0.1; digit > (1 / ((double)exponentiation((UINT)10, (UINT)digitnum))); digit *= 0.1) {
 		for (double num = 0 * digit; num <= (9 * digit); num += (1 * digit)) {
 			if ((exponentiation((double)retdata + num, (UINT)rootnum)) >= data) {
 				num -= 1 * digit;

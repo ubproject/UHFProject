@@ -90,6 +90,11 @@ bool WRITE(STRC* data, const char* text, UINT startpoint = 0, RANGE range = {0,0
 	return true;
 }
 
+/*Write to STRC type variable.
+* Write as much as allocated.
+* Base Function.
+* This function will not free of memory.
+*/
 bool WRITE(STRC* data, char d, UINT point) {
 	if (data->alloced == 0 || point >= data->alloced)
 		return false;
@@ -97,13 +102,15 @@ bool WRITE(STRC* data, char d, UINT point) {
 	data->str[data->alloced - 1] = 0;
 	return true;
 }
+
 /*Copy String.
 * Base Function.
+* This function will free of "CopyTo" memory
 */
 bool COPYSTRC(STRC* CopyTo, const char* from) {
-	if (!ALLOC(CopyTo, (UINT)strlen(from) + 1))return false;
-	if (!WRITE(CopyTo, from))return false;
-	return  true;
+	if (from == NULL)return false;
+	bool is_success = ALLOC(CopyTo, (UINT)strlen(from) + 1);
+	return (is_success == true) && WRITE(CopyTo, from) == true;
 }
 
 /*Connect String.
@@ -114,11 +121,11 @@ bool CONNECTSTRC(STRC* CopyTo, const char* data1, const char* data2) {
 		return false;
 	}
 	else if (data1==NULL) {
-		if (!equal(CopyTo, data2))return false;
+		if (!COPYSTRC(CopyTo, data2))return false;
 		return true;
 	}
 	else if (data2==NULL) {
-		if (!equal(CopyTo, data1))return false;
+		if (!COPYSTRC(CopyTo, data1))return false;
 		return true;
 	}
 		
@@ -128,8 +135,8 @@ bool CONNECTSTRC(STRC* CopyTo, const char* data1, const char* data2) {
 	//1:I’[•¶Žš—p
 	UINT size = (UINT)strlen(data1) + (UINT)strlen(data2) + 1;
 
-	if (!equal(&data1_buf, data1)) return false;
-	if (!equal(&data2_buf, data2)) return false;
+	if (!COPYSTRC(&data1_buf, data1)) return false;
+	if (!COPYSTRC(&data2_buf, data2)) return false;
 
 	if (!ALLOC(CopyTo, size))      return false;
 	
@@ -148,7 +155,7 @@ bool CONNECTSTRC(STRC* CopyTo, const char* data1, const char* data2) {
 */
 bool ADD(STRC* data,const char* text) {
 	if (data->str == NULL) {
-		return equal(data,text);
+		return COPYSTRC(data,text);
 	}
 	if (!CONNECTSTRC(data, data->str, text))
 		return false;
@@ -162,7 +169,7 @@ bool SUBSTRC(STRC* to, STRC* from, RANGE range) {
 	/*Process of buffer.*/
 	STRC buf STRC_init;
 
-	if (!equal(&buf, from->str)) {
+	if (!COPYSTRC(&buf, from->str)) {
 		STRC_fin(buf);
 		return false;
 	}
@@ -195,6 +202,7 @@ bool equal(STRC* data,const char* text) {
 	bool is_success = ALLOC(data, (UINT)strlen(text) + 1);
 	return (is_success==true)&&WRITE(data,text)==true;
 }
+
 bool is_equal(STRC* data1,STRC* data2) {
 	if (strlen(data1->str) != strlen(data2->str)) return false;
 	for (UINT i = 0; i < strlen(data1->str);i++) 
