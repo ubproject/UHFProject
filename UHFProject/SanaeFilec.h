@@ -11,7 +11,7 @@
 typedef unsigned int uint;
 typedef struct {
 	FILE* filepointer;
-	bool is_exist;
+	bool is_existing;
 	STRC name;
 	STRC str;
 }FILEC;
@@ -31,44 +31,53 @@ bool fileread (FILEC*);
 
 
 bool filemake(FILEC* data, const char* filename) {
+	//Preprocessing
 	fopen_s(&data->filepointer, filename, "w");
-	if (data->filepointer == NULL) {
-		return data->is_exist = false;
-	}
+
+	//MainProcess
+	if (data->filepointer == NULL)
+		return data->is_existing = false;
+
+	//Post-Processing
 	fclose(data->filepointer);
-	return data->is_exist = true;
+	return data->is_existing = true;
 }
 bool fileopen(FILEC* data, const char* filename) {
+	//Preprocessing
 	equal(&data->name, filename);
 	fopen_s(&data->filepointer, filename, "r+");
-	if (data->filepointer == NULL) {
+
+	//MainProcess
+	if (data->filepointer == NULL)
 		return filemake(data,filename);
-	}
+
+	//Post-Processing
 	fclose(data->filepointer);
-	return data->is_exist = true;
+	return data->is_existing = true;
 }
 
 void fileclose(FILEC* data) {
 	STRC_fin(data->str);
 	STRC_fin(data->name);
-	data->is_exist = false;
+
+	data->is_existing = false;
 	return;
 }
 
 bool filewrite(FILEC* data, const char* text, const char* mode = "w") {
-	if (!data->is_exist)return false;
+	//PreProcessing
+	if (!data->is_existing)return false;
+
 	fopen_s(&data->filepointer, data->name.str, mode);
 	if (data->filepointer == NULL) {
-		data->is_exist = false;
+		data->is_existing = false;
 		return false;
 	}
+
+	//MainProcess
 	fprintf(data->filepointer, text);
-	fclose(data->filepointer);
-	fopen_s(&data->filepointer, data->name.str, "r+");
-	if (data->filepointer == NULL) {
-		data->is_exist = false;
-		return false;
-	}
+
+	//Post-Processing
 	fclose(data->filepointer);
 	return true;
 }
@@ -78,17 +87,24 @@ bool fileadd(FILEC* data, const char* text) {
 }
 
 bool fileread(FILEC* data) {
+	//PreProcessing
 	STRC_fin(data->str);
-	if (!data->is_exist)return false;
+	if (!data->is_existing)return false;
+
 	fopen_s(&data->filepointer, data->name.str, "r+");
 	if (data->filepointer == NULL) {
-		data->is_exist = false;
+		data->is_existing = false;
 		return false;
 	}
-	if (!data->is_exist)return false;
+	if (!data->is_existing)return false;
+
+	//MainProcess
 	while (1) {
+		//Allocate memory for buffer.
 		char* buf = (char*)calloc(256, sizeof(char));
 		if (buf == NULL)return false;
+
+		//Write to buffer
 		for (uint i = 0; i < 256; i++) {
 			if ((buf[i] = getc(data->filepointer)) == EOF) {
 				buf[i] = 0;

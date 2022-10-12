@@ -9,7 +9,7 @@
 
 
 #define STRC_init      ={NULL,0}
-#define STRC_fin(data) SFREE(&data)
+#define STRC_fin(data) STR_FREE(&data)
 
 
 /*Define Types*/
@@ -33,11 +33,11 @@ typedef struct {
 
 /*Define Function*/
 /*Base Function*/
-void SFREE (STRC*);
-bool ADD   (STRC*, const char*);
-bool ALLOC (STRC*, UINT);
-bool WRITE (STRC*, const char*, UINT, RANGE);
-bool WRITE (STRC*, char, UINT);
+void STR_FREE (STRC*);
+bool ADD      (STRC*, const char*);
+bool ALLOC    (STRC*, UINT);
+bool WRITE    (STRC*, const char*, UINT, RANGE);
+bool WRITE    (STRC*, char, UINT);
 bool COPYSTRC    (STRC*, const char*);
 bool CONNECTSTRC (STRC*, const char*, const char*);
 bool SUBSTRC     (STRC*, STRC*, RANGE);
@@ -51,7 +51,7 @@ bool equal(STRC*, const char*);
 /*Free up memory.
 * Base Function.
 */
-void SFREE(STRC* data) {
+void STR_FREE(STRC* data) {
 	free(data->str);
 	data->str     = NULL;
 	data->alloced = 0;
@@ -69,9 +69,11 @@ bool ALLOC(STRC* data,UINT size) {
 		*data STRC_init;
 		return false;
 	}
-	SFREE(data);
+	STR_FREE(data);
+
 	data->str = (char*)calloc(size,sizeof(char));
 	data->alloced = { (data->str == NULL) ? 0 : size };
+
 	return (data->str == NULL) ? false : true;
 }
 
@@ -83,10 +85,14 @@ bool ALLOC(STRC* data,UINT size) {
 bool WRITE(STRC* data, const char* text, UINT startpoint = 0, RANGE range = {0,0}) {
 	if (data->alloced == 0)
 		return false;
+
 	range.to = { (range.to == 0) ? (UINT)strlen(text) : range.to };
+
 	for (UINT i = startpoint, j = range.from; (i < (data->alloced)) && (j <= range.to) && (j < strlen(text)); i++, j++)
 		data->str[i] = text[j];
+
 	data->str[data->alloced - 1] = 0;
+
 	return true;
 }
 
@@ -98,8 +104,10 @@ bool WRITE(STRC* data, const char* text, UINT startpoint = 0, RANGE range = {0,0
 bool WRITE(STRC* data, char d, UINT point) {
 	if (data->alloced == 0 || point >= data->alloced)
 		return false;
+
 	data->str[point] = d;
 	data->str[data->alloced - 1] = 0;
+
 	return true;
 }
 
@@ -109,7 +117,9 @@ bool WRITE(STRC* data, char d, UINT point) {
 */
 bool COPYSTRC(STRC* CopyTo, const char* from) {
 	if (from == NULL)return false;
+
 	bool is_success = ALLOC(CopyTo, (UINT)strlen(from) + 1);
+
 	return (is_success == true) && WRITE(CopyTo, from) == true;
 }
 
@@ -144,8 +154,8 @@ bool CONNECTSTRC(STRC* CopyTo, const char* data1, const char* data2) {
 	if (!WRITE(CopyTo, data2_buf.str,data1_buf.alloced-1)) return false;
 
 	//Free of buf memory
-	SFREE(&data1_buf);
-	SFREE(&data2_buf);
+	STR_FREE(&data1_buf);
+	STR_FREE(&data2_buf);
 	
 	return true;
 }
@@ -154,11 +164,12 @@ bool CONNECTSTRC(STRC* CopyTo, const char* data1, const char* data2) {
 * Base Function.
 */
 bool ADD(STRC* data,const char* text) {
-	if (data->str == NULL) {
+	if (data->str == NULL)
 		return COPYSTRC(data,text);
-	}
+
 	if (!CONNECTSTRC(data, data->str, text))
 		return false;
+
 	return true;
 }
 
@@ -175,7 +186,7 @@ bool SUBSTRC(STRC* to, STRC* from, RANGE range) {
 	}
 
 	/*Initialization of 'to'*/
-	SFREE(to);
+	STR_FREE(to);
 	
 	/*For blank and reserve(1)*/
 	MINI blank = 2;
@@ -183,8 +194,10 @@ bool SUBSTRC(STRC* to, STRC* from, RANGE range) {
 	long64 size = (long64)(range.to - range.from) + (long64)blank;
 	if (size < 0)
 		return false;
+
 	if (!ALLOC(to, (UINT)size))
 		return false;
+
 	if (!WRITE(to, buf.str, 0, { range.from,range.to }))
 		return false;
 
@@ -199,14 +212,18 @@ bool SUBSTRC(STRC* to, STRC* from, RANGE range) {
 /*Allocate and write.*/
 bool equal(STRC* data,const char* text) {
 	if (text==NULL)return false;
+
 	bool is_success = ALLOC(data, (UINT)strlen(text) + 1);
+
 	return (is_success==true)&&WRITE(data,text)==true;
 }
 
 bool is_equal(STRC* data1,STRC* data2) {
 	if (strlen(data1->str) != strlen(data2->str)) return false;
+
 	for (UINT i = 0; i < strlen(data1->str);i++) 
 		if (data1->str[i] != data2->str[i])return false;
+
 	return true;
 }
 #endif

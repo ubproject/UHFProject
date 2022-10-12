@@ -38,13 +38,15 @@ fraction& to_min(fraction&);
 double    fraction_num(fraction);
 
 /*素数判定*/
-bool   is_primenum   (UINT);
+bool   is_primenum(UINT);
+
 /*累乗根の計算*/
-double root    (UINT ,MINI,MINI);
+double root(UINT ,MINI,MINI);
+
 /*整数を配列へ変換*/
-void   SFREE   (NUMS*);
-bool   to_array(NUMS*,UINT);
-UINT   getnum  (UINT ,UINT);
+void   MATH_FREE(NUMS*);
+bool   to_array (NUMS*,UINT);
+UINT   getnum   (UINT ,UINT);
 
 
 /*累乗の計算をします。(unsigned int)
@@ -167,7 +169,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 }
 
 
-void SFREE(NUMS* d) {
+void MATH_FREE(NUMS* d) {
 	free(d->data);
 	d->len = 0;
 }
@@ -175,7 +177,7 @@ void SFREE(NUMS* d) {
 
 /*整数を配列へ変換します。*/
 bool to_array(NUMS* toarray, UINT data) {
-	SFREE(toarray);
+	MATH_FREE(toarray);
 	/*桁数を求める*/
 	UINT digit = 1;
 	for (UINT i = 10; (i - 1) < data; i *= 10, i += 1,digit++);
@@ -210,13 +212,13 @@ UINT getnum(UINT from,UINT digitnum) {
 
 	if (!to_array(&buf, from))return 0;
 	if ((digitnum-1) >= buf.len) {
-		SFREE(&buf);
+		MATH_FREE(&buf);
 		return 0;
 	}
 
 	UINT retdata = buf.data[digitnum - 1];
 
-	SFREE(&buf);
+	MATH_FREE(&buf);
 	return retdata;
 }
 

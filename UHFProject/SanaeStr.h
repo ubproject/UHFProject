@@ -9,9 +9,12 @@
 #include <vector>
 
 
+/*Define types*/
 typedef char ID;
 
-
+/*This class is using "SanaeStrc.h" and "SanaeWchar.h".
+* This class can convert "unsigned int" type to "str" type but you need to include "SanaeMath.h".
+*/
 class str {
 private:
 
@@ -66,17 +69,20 @@ public:
 	}
 	str(const char* text) {
 		setnull();
+
 		if (!equal(&STR, text))
 			error("Failed to process of STRC type.(Constructor)", 1);
 	}
 	str(const wchar_t* wtext) {
 		setnull();
+
 		if (!to_char(&STR, wtext))
 			error("Failed to process of WSTRC type.(Constructor)",1);
 	}
 	//CopyConstructor
 	str(const str& text) {
 		setnull();
+
 		if (!equal(&this->STR, text.STR.str))
 			error("Failed to process of STRC type.(CopyConstructor)");
 	}
@@ -96,20 +102,26 @@ public:
 	char& operator [](UINT location) {
 		if (STR.alloced<=location)
 			error("Failed to access to mem.Too many num to access.");
+
 		return *(STR.str + location);
 	}
 	str& operator =(const char* text) {
 		if (!equal(&STR, text))
 			error("Failed to process of STRC type.(equal)");
+
 		return *this;
 	}
 	str& operator =(const str& text) {
 		if (!equal(&this->STR, text.STR.str))
 			error("Failed to process of STRC type.(equal)");
+
 		return *this;
 	}
 	str operator +=(const char* text) {
 		return add(text);
+	}
+	str operator +=(char data) {
+		return add(data);
 	}
 	str operator +=(const str& text) {
 		return add(text);
@@ -128,13 +140,25 @@ public:
 	/*Function*/
 	//Add Text.
 	str& add(const char* text) {
-		if (!ADD(&this->STR, text))
+		ADD(&this->STR, text);
+
+		return *this;
+	}
+	str& add(char data) {
+		STRC buf STRC_init;
+
+		if (!ALLOC(&buf, 2))
 			return *this;
+
+		WRITE(&buf,data,0);
+		ADD(&this->STR, buf.str);
+
+		STRC_fin(buf);
 		return *this;
 	}
 	str& add(const wchar_t* wtext) {
-		if (!ADD(&this->WSTR, wtext))
-			return *this;
+		ADD(&this->WSTR, wtext);
+
 		return *this;
 	}
 	str& add(const str& text) {
@@ -143,14 +167,17 @@ public:
 	//Get to Text.
 	const char* c_str(RANGE range = {0,0}) {
 		range.to = range.to == 0 ? (UINT)strlen(STR.str) : range.to;
+
 		if (!SUBSTRC(&view_buf,&STR,range))
 			error("Failed to process of STRC type.(c_str)");
+
 		return view_buf.str;
 	}
 	//Get to Text
 	const wchar_t* c_wstr() {
 		if (!to_wchar(&WSTR,STR.str))
 			error("Failed to process of STRC type.(c_wstr)");
+
 		return WSTR.wstr;
 	}
 	//Get to allocate size.
@@ -160,9 +187,12 @@ public:
 	//Search specified char
 	long64 find(char data,UINT through=0) {
 		for (long64 i = 0; i < (long64)strlen(STR.str); i++) {
+			//Same data
 			if (*(STR.str + i) == data) {
+				//not through
 				if (through == 0)
 					return i;
+				//through
 				if (through != 0)
 					through -= 1;
 			}
@@ -172,14 +202,18 @@ public:
 	long64 find(const char* data,UINT through=0) {
 		for (long64 i = 0;;i++) {
 			for (long64 j = 0, point = this->find(*(data + 0), (UINT)i); j < (long64)strlen(data); j++) {
+				//If not found
 				if (point == -1) 
 					return -1;
+				
 				if (*(STR.str + point + j) != *(data + j))
 					break;
+
 				//Then process of through.
 				if (j == (strlen(data) - 1)) {	
 					if (through == 0)
 						return point;
+
 					if (through != 0)
 						through -= 1;
 				}
@@ -188,38 +222,56 @@ public:
 	}
 	UINT count(char data) {
 		UINT retdata = 0;
-		for (UINT i = 0; i < STR.alloced;i++) if(STR.str[i] == data)retdata += 1;
+
+		//If find char of "data" then add one to count.
+		for (UINT i = 0; i < STR.alloced;i++) if(STR.str[i] == data)
+			retdata += 1;
+
 		return retdata;
 	}
 	UINT count(const char* data) {
+		//PreProcessing
 		UINT retdata = 0;
 		UINT datalen = (UINT)strlen(data);
+
+		//MainProcess
 		for (UINT i = 0; i < STR.alloced;i++) {
+			//If found char
 			if (STR.str[i]==data[0]) {
+				//Is same data?
 				for (UINT j = 0; j < datalen;j++) {
-					if (STR.str[i + j] != data[j])break;
-					if (j==(datalen-1))retdata += 1;
+					//lie
+					if (STR.str[i + j] != data[j])
+						break;
+					//truth
+					if (j==(datalen-1))
+						retdata += 1;
 				}
 			}
 		}
+		//ret
 		return retdata;
 	}
 	/*Å‘O—ñ‚©‚çtopoint‚Ü‚Åíœ‚µ‚Ü‚·B*/
 	str& erase_front(UINT topoint) {
 		SUBSTRC(&STR, &STR, {topoint+1,(UINT)strlen(STR.str)+1});
+		//ret
 		return *this;
 	}
 	/*ÅŒã”ö‚©‚çtopoint‚Ü‚Åíœ‚µ‚Ü‚·B*/
 	str& erase_back(UINT topoint) {
 		SUBSTRC(&STR, &STR, { 0,topoint-1 });
+		//ret
 		return *this;
 	}
 	str& erase(RANGE range = {0,0}) {
+		//PreProcessing
 		range.to = range.to == 0 ? this->STR.alloced - 1 : range.to;
 
 		STRC buf_front STRC_init;
 		STRC buf_back  STRC_init;
 
+		//MainProcess
 		if (range.from == 0) {
 			COPYSTRC(&buf_front, "");
 		}else {
@@ -232,8 +284,10 @@ public:
 			SUBSTRC(&buf_back, &STR, { range.to+1,this->STR.alloced});
 		}
 
+		//FinallyProcess
 		CONNECTSTRC(&STR,buf_front.str,buf_back.str);
 
+		//Post-Processing
 		STRC_fin(buf_front);
 		STRC_fin(buf_back);
 
@@ -241,7 +295,7 @@ public:
 	}
 
 	str& replace(const char* from,const char* to,UINT through=0) {
-		//find point and is existing
+		//PreProcessing
 		UINT found = (UINT)this->find(from,through);
 		if (found == -1) return *this;
 		
@@ -250,31 +304,38 @@ public:
 
 		STRC buffer    STRC_init;
 
+		//MainProcess
 		if (found != 0) {
 			SUBSTRC(&buf_front, &this->STR, { 0,(UINT)found });
 		}
 		SUBSTRC(&buf_back , &this->STR, {(UINT)found+(UINT)strlen(from),this->STR.alloced-1});
 
+		//FinallyProcess
 		CONNECTSTRC(&buffer,buf_front.str,to);
 		CONNECTSTRC(&STR,buffer.str,buf_back.str);
 
+		//Post-Processing
 		STRC_fin(buf_front);
 		STRC_fin(buf_back);
 		STRC_fin(buffer);
 		
+		//ret
 		return *this;
 	}
 	str& division(std::vector<str>* to,char divchr) {
+		//PreProcessing
 		STRC buf_STR STRC_init;
 		equal(&buf_STR,this->STR.str);
 
 		long64 i = 0;
 		while ((i = this->find(divchr)) !=-1) {
 			STRC buf STRC_init;
+
 			SUBSTRC(&buf, &STR, {0,(UINT)i-1});
 			this->erase_front((UINT)i);
 			str bufstr = buf.str;
 			to->push_back(bufstr);
+			
 			STRC_fin(buf);
 		}
 		str buf = this->STR.str;
@@ -301,14 +362,14 @@ public:
 		STRC buf STRC_init;
 
 		if (!equal(&buf, STR.str)) {
-			SFREE(&bufd);
+			MATH_FREE(&bufd);
 			return *this;
 		}
 
 		STRC_fin(STR);
 
 		if (!ALLOC(&STR, buf.alloced + bufd.len)) {
-			SFREE(&bufd);
+			MATH_FREE(&bufd);
 			return *this;
 		}
 
@@ -319,8 +380,9 @@ public:
 			if ((i-1)==0)WRITE(&STR, (char)bufd.data[0], (j+1));
 		}
 
-		SFREE(&bufd);
-		SFREE(&buf);
+		MATH_FREE(&bufd);
+		STR_FREE(&buf);
+
 		return *this;
 	}
 
