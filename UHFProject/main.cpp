@@ -75,7 +75,10 @@ void test_math() {
 	printf("2^1/5=%lf\n", root(2, 5, 3));          //2^1/5=1.148
 	return;
 }
-
+void test_util() {
+	printf("1~9:%u\n",random(1,9));
+	printf("year:%u  day:%u  %u:%u:%u\n",get_year(),get_day(),get_hour(),get_minutes(),get_second());
+}
 int main(void){
 	printf("strŒ^\n");
 	test_str();
@@ -85,6 +88,9 @@ int main(void){
 
 	printf("mathŠÖ”ŒQ\n");
 	test_math();
+
+	printf("utilŠÖ”ŒQ\n");
+	test_util();
 
 	return 0;
 }

@@ -59,7 +59,7 @@ UINT get_second(time_t buf = 0) {
 	
 	buf %= MIN;
 
-	return buf;
+	return (UINT)buf;
 }
 
 UINT get_minutes(time_t buf = 0) {
@@ -69,7 +69,7 @@ UINT get_minutes(time_t buf = 0) {
 	buf %= HOUR;
 	buf /= MIN;
 
-	return buf;
+	return (UINT)buf;
 }
 
 UINT get_hour(time_t buf = 0) {
@@ -79,7 +79,7 @@ UINT get_hour(time_t buf = 0) {
 	buf %= DAY;
 	buf /= HOUR;
 
-	return  buf + GMT;
+	return  (UINT)(buf + GMT);
 }
 
 UINT get_day(time_t buf = 0) {
@@ -90,7 +90,7 @@ UINT get_day(time_t buf = 0) {
 	buf /= DAY;
 
 	//Ç»ÇÒÇ©ÇÌÇ©ÇÁÇÒÇØÇ«13ì˙ïœâªÇµÇƒÇÈÅB
-	return  buf-13;
+	return  (UINT)(buf-13);
 }
 
 UINT get_year(time_t buf = 0) {
@@ -102,6 +102,6 @@ UINT get_year(time_t buf = 0) {
 	/*1970îNÇ©ÇÁÇÃåoâﬂéûä‘*/
 	buf += 1970;
 
-	return  buf;
+	return  (UINT)buf;
 }
 #endif
