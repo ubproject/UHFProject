@@ -11,8 +11,8 @@ typedef unsigned int UINT;
 
 /*Define Function*/
 /*Random*/
-void setseed();
-UINT random(UINT,UINT);
+void setseed ();
+UINT random  (UINT,UINT);
 /*Time*/
 UINT get_second (time_t);
 UINT get_minutes(time_t);
@@ -24,6 +24,7 @@ UINT get_year   (time_t);
 /*random*/
 
 bool is_setseed = false;
+
 void setseed() {
 	union times{
 		time_t time;
@@ -78,19 +79,23 @@ UINT get_hour(time_t buf = 0) {
 
 	buf %= DAY;
 	buf /= HOUR;
+	buf += GMT;
 
-	return  (UINT)(buf + GMT);
+	if (buf>24)
+		buf -= 24;
+
+	return  (UINT)buf;
 }
 
 UINT get_day(time_t buf = 0) {
 	if (buf == 0)
 		buf = time(NULL);
-
+	
+	buf -= DAY;
 	buf %= YEAR;
 	buf /= DAY;
-
-	//‚È‚ñ‚©‚í‚©‚ç‚ñ‚¯‚Ç13“ú•Ï‰»‚µ‚Ä‚éB
-	return  (UINT)(buf-13);
+	
+	return  (UINT)buf-11;
 }
 
 UINT get_year(time_t buf = 0) {
