@@ -140,6 +140,7 @@
     <ClInclude Include="SanaeMath.h" />
     <ClInclude Include="SanaeStr.h" />
     <ClInclude Include="SanaeStrc.h" />
+    <ClInclude Include="SanaeUtil.h" />
     <ClInclude Include="SanaeWchar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,6 @@
 #include "Sanae.h"
+#include "SanaeUtil.h"
+
 
 void test_str() {
 	//‘ã“ü
@@ -73,6 +75,7 @@ void test_math() {
 	printf("2^1/5=%lf\n", root(2, 5, 3));          //2^1/5=1.148
 	return;
 }
+
 int main(void){
 	printf("strŒ^\n");
 	test_str();

@@ -120,9 +120,6 @@ public:
 	str operator +=(const char* text) {
 		return add(text);
 	}
-	str operator +=(char data) {
-		return add(data);
-	}
 	str operator +=(const str& text) {
 		return add(text);
 	}
@@ -142,18 +139,6 @@ public:
 	str& add(const char* text) {
 		ADD(&this->STR, text);
 
-		return *this;
-	}
-	str& add(char data) {
-		STRC buf STRC_init;
-
-		if (!ALLOC(&buf, 2))
-			return *this;
-
-		WRITE(&buf,data,0);
-		ADD(&this->STR, buf.str);
-
-		STRC_fin(buf);
 		return *this;
 	}
 	str& add(const wchar_t* wtext) {
