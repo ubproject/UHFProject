@@ -5,6 +5,9 @@
 ベースとしてC言語で記述したプログラムを集積しstr型やfile型を作成する。  
 Sanae.hによりすべてのヘッダーファイルをインクルードする。  
 Sanae.h  
+- SanaeUtil.h  
+  * time.h
+  * stdlib.h
 - SanaeMath.h  
   * stdlib.h  
 - SanaeStr.h  
