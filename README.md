@@ -93,3 +93,9 @@ Sanae.h
 	
 	//2^1/5を計算(下三桁)
 	printf("2^1/5=%lf\n",root(2,5,3));          //2^1/5=1.148
+## SanaeUtil.h
+	//1~9までの整数を出力
+	printf("1~9:%u\n",random(1,9));
+	
+	//year:2022  day:286  23:21:29
+	printf("year:%u  day:%u  %u:%u:%u\n",get_year(),get_day(),get_hour(),get_minutes(),get_second());
