@@ -98,7 +98,9 @@ UINT get_day(time_t buf = 0) {
 	buf %= YEAR;
 	buf /= DAY;
 	
-	return  (UINT)buf-12;
+	buf -= 12;
+
+	return  (UINT)buf;
 }
 
 UINT get_year(time_t buf = 0) {
