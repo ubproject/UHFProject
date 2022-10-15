@@ -42,6 +42,7 @@ bool filemake(FILEC* data, const char* filename) {
 	fclose(data->filepointer);
 	return data->is_existing = true;
 }
+
 bool fileopen(FILEC* data, const char* filename) {
 	//Preprocessing
 	equal(&data->name, filename);

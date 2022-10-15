@@ -3,8 +3,8 @@
 
 
 /*INCLUDE*/
-#include "SanaeStrc.h"
-#include "SanaeWchar.h"
+#include "UHFC/SanaeStrc.h"
+#include "UHFC/SanaeWchar.h"
 #include <stdexcept>
 #include <vector>
 

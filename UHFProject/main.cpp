@@ -1,6 +1,4 @@
 #include "Sanae.h"
-#include "SanaeUtil.h"
-
 
 void test_str() {
 	//‘ã“ü

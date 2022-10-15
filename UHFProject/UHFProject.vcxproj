@@ -135,13 +135,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sanae.h" />
-    <ClInclude Include="SanaeFile.h" />
-    <ClInclude Include="SanaeFilec.h" />
-    <ClInclude Include="SanaeMath.h" />
-    <ClInclude Include="SanaeStr.h" />
-    <ClInclude Include="SanaeStrc.h" />
-    <ClInclude Include="SanaeUtil.h" />
-    <ClInclude Include="SanaeWchar.h" />
+    <ClInclude Include="UHF\SanaeFile.h" />
+    <ClInclude Include="UHF\SanaeStr.h" />
+    <ClInclude Include="UHF\UHFC\SanaeFilec.h" />
+    <ClInclude Include="UHF\UHFC\SanaeMath.h" />
+    <ClInclude Include="UHF\UHFC\SanaeStrc.h" />
+    <ClInclude Include="UHF\UHFC\SanaeUtil.h" />
+    <ClInclude Include="UHF\UHFC\SanaeWchar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
