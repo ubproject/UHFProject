@@ -13,6 +13,7 @@ typedef unsigned int UINT;
 /*Random*/
 void setseed ();
 UINT random  (UINT,UINT);
+
 /*Time*/
 UINT get_second (time_t);
 UINT get_minutes(time_t);
@@ -91,11 +92,13 @@ UINT get_day(time_t buf = 0) {
 	if (buf == 0)
 		buf = time(NULL);
 	
+	//èâì˙Çä‹Ç‹Ç»Ç¢
 	buf -= DAY;
+
 	buf %= YEAR;
 	buf /= DAY;
 	
-	return  (UINT)buf-11;
+	return  (UINT)buf-12;
 }
 
 UINT get_year(time_t buf = 0) {
