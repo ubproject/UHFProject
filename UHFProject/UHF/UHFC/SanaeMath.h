@@ -157,7 +157,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 	}
 	/*×‚©‚¢Œ…‚ðŒ©‚Â‚¯‚é*/
 	for (double digit = 0.1; digit > (1 / ((double)exponentiation((UINT)10, (UINT)digitnum))); digit *= 0.1) {
-		for (double num = 0 * digit; num <= (9 * digit); num += (1 * digit)) {
+		for (double num = 0 * digit; num <= (10 * digit); num += (1 * digit)) {
 			if ((exponentiation((double)retdata + num, (UINT)rootnum)) >= data) {
 				num -= 1 * digit;
 				retdata += num;

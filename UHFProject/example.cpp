@@ -1,3 +1,4 @@
+/*
 #include "Sanae.h"
 
 void test_str() {
@@ -29,7 +30,7 @@ void test_str() {
 	Bravo
 	Charlie
 	Delta
-	*/
+	
 
 	//'a'‚Ì”‚ğ’²¸
 	printf("%u\n", _str.count('a')); //4
@@ -77,6 +78,7 @@ void test_util() {
 	printf("1~9:%u\n",random(1,9));
 	printf("year:%u  day:%u  %u:%u:%u\n", get_year(), get_day(), get_hour(), get_minutes(), get_second());
 }
+
 int main(void){
 	printf("strŒ^\n");
 	test_str();
@@ -92,3 +94,5 @@ int main(void){
 
 	return 0;
 }
+
+*/
