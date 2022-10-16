@@ -24,6 +24,7 @@ void test_str() {
 	for (str i : str_array) {
 		printf("%s\n", i.c_str());
 	}
+	
 	/*
 	Alpha
 	Bravo
@@ -71,6 +72,25 @@ void test_math() {
 
 	//2^1/5‚ðŒvŽZ(‰ºŽOŒ…)
 	printf("2^1/5=%lf\n", root(2, 5, 3));          //2^1/5=1.148
+
+	printf("Sanaemath.h");
+	time_t defs = time(NULL);
+	for (UINT i = 1; i <= 10000; i++) {
+		printf("%u^1/2=%lf\n", i, root(i, 2, 6));
+	}
+	defs = time(NULL) - defs;
+	double bufs = (double)defs / 10000;
+
+	printf("math.h");
+	time_t defm = time(NULL);
+	for (UINT i = 1; i <= 10000; i++) {
+		printf("%u^1/2=%lf\n", i, sqrt(i));
+	}
+	defm = time(NULL) - defm;
+	double bufm = (double)defm / 10000;
+
+	printf("SanaeMath‚Í%lf•b‚©‚©‚è‚Ü‚µ‚½\nMath‚Í%lf•b‚©‚©‚è‚Ü‚µ‚½B\n", bufm, bufs);
+
 	return;
 }
 void test_util() {

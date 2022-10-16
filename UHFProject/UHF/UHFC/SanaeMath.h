@@ -148,7 +148,7 @@ digitnumŒ…‚Ü‚Å­”‚ğ‹‚ß‚Ü‚·B
 */
 double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 	if (digitnum > 6) digitnum = 6;
-	/*ˆêŒ…–Ú‚ğŒ©‚Â‚¯‚é*/
+	/*®”‚ğŒ©‚Â‚¯‚é*/
 	double retdata = 0;
 	for (UINT i = 1; i <= data; i++) {
 		if (exponentiation(i, (UINT)rootnum) == data) {
@@ -161,10 +161,17 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 		}
 	}
 	/*×‚©‚¢Œ…‚ğŒ©‚Â‚¯‚é*/
-	for (double digit = 0.1; digit > (1 / ((double)exponentiation((UINT)10, (UINT)digitnum))); digit *= 0.1) {
-		for (double num = 0 * digit; num <= (10 * digit); num += (1 * digit)) {
-			if ((exponentiation((double)retdata + num, (UINT)rootnum)) >= data) {
-				num -= 1 * digit;
+	for (double digit = 0.1; digit >= ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum))); digit /= 10) {
+		for (double num = 0; num < ((double)10 * digit); num += digit) {
+			double buf = exponentiation((double)retdata + num, (UINT)rootnum);
+			
+			if (buf > data) {
+				num     -= digit;
+				retdata += num;
+				break;
+			}
+			//ÅŒã‚Ü‚Ås‚Á‚Ä‚µ‚Ü‚Á‚½‚ç9‚É‚·‚éB
+			else if (num >= (9 * digit)) {
 				retdata += num;
 				break;
 			}
