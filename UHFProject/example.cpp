@@ -1,4 +1,3 @@
-/*
 #include "Sanae.h"
 
 void test_str() {
@@ -30,7 +29,7 @@ void test_str() {
 	Bravo
 	Charlie
 	Delta
-	
+	*/
 
 	//'a'‚Ì”‚ğ’²¸
 	printf("%u\n", _str.count('a')); //4
@@ -94,5 +93,3 @@ int main(void){
 
 	return 0;
 }
-
-*/

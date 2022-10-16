@@ -54,10 +54,11 @@ fromをcount回かけた数を返します。
 */
 UINT exponentiation(UINT from, UINT count) {
 	if (count == 0)return 1;
+
 	UINT retdata = from;
-	for (UINT i = 1; i < count; i++) {
+	for (UINT i = 1; i < count; i++)
 		retdata *= from;
-	}
+
 	return retdata;
 }
 
@@ -67,10 +68,11 @@ fromをcount回かけた数を返します。
 */
 double exponentiation(double from, UINT count) {
 	if (count == 0)return 1;
+
 	double retdata = from;
-	for (UINT i = 1; i < count; i++) {
+	for (UINT i = 1; i < count; i++)
 		retdata *= from;
-	}
+	
 	return retdata;
 }
 
@@ -80,6 +82,7 @@ fromをcount(double)回かけた数を返します。
 */
 double exponentiation(double from, double count,UINT digitnum=3) {
 	if (count == 0)return 1;
+	
 	double retdata = from;
 	/*分母分子を決定*/
 	fraction b = {0,0};
@@ -97,11 +100,13 @@ double exponentiation(double from, double count,UINT digitnum=3) {
 /*約分を行います。*/
 fraction& to_min(fraction& data) {
 	double buf = (double)data.molecule / (double)data.denominator;
+	
 	if (buf == (UINT)buf) {
 		data.molecule = (UINT)buf;
 		data.denominator = 1;
 		return data;
 	}
+	
 	buf = (double)data.denominator / (double)data.molecule;
 	if (buf == (UINT)buf) {
 		data.molecule = 1;
