@@ -4,6 +4,7 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 typedef unsigned int UINT;
@@ -92,14 +93,11 @@ UINT get_day(time_t buf = 0) {
 	if (buf == 0)
 		buf = time(NULL);
 	
-	//èâì˙Çä‹Ç‹Ç»Ç¢
-	buf -= DAY;
+	buf -= (time_t)DAY*12;
 
 	buf %= YEAR;
 	buf /= DAY;
 	
-	buf -= 12;
-
 	return  (UINT)buf;
 }
 

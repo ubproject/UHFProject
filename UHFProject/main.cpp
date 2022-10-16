@@ -75,7 +75,7 @@ void test_math() {
 }
 void test_util() {
 	printf("1~9:%u\n",random(1,9));
-	printf("year:%u  day:%u  %u:%u:%u\n",get_year(),get_day(),get_hour(),get_minutes(),get_second());
+	printf("year:%u  day:%u  %u:%u:%u\n", get_year(), get_day(), get_hour(), get_minutes(), get_second());
 }
 int main(void){
 	printf("strŒ^\n");
