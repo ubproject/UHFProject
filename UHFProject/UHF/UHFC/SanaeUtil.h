@@ -30,7 +30,7 @@ bool is_setseed = false;
 void setseed() {
 	union times{
 		time_t time;
-		int    show[sizeof time_t / sizeof (int)];
+		UINT   show[sizeof time_t / sizeof (int)];
 	}
 	data = { time(NULL) };
 	
