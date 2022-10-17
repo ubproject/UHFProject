@@ -38,17 +38,20 @@
     <ClInclude Include="UHF\UHFC\SanaeFilec.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
-    <ClInclude Include="UHF\UHFC\SanaeMath.h">
+    <ClInclude Include="UHF\UHFC\SanaeMathc.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
     <ClInclude Include="UHF\UHFC\SanaeStrc.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
+    <ClInclude Include="UHF\UHFC\SanaeWchar.h">
+      <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
+    </ClInclude>
     <ClInclude Include="UHF\UHFC\SanaeUtil.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
-    <ClInclude Include="UHF\UHFC\SanaeWchar.h">
-      <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
+    <ClInclude Include="UHF\SanaeMath.h">
+      <Filter>ヘッダー ファイル\UHF</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

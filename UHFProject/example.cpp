@@ -99,6 +99,15 @@ void test_util() {
 }
 
 int main(void){
+	UINT d = random(2,10000);
+	printf("%u‚ğ‘fˆö”•ª‰ğ‚µ‚Ü‚·B\n",d);
+	std::vector<UINT> l;
+	factorization(l,d);
+
+	for (UINT i:l) {
+		printf("%u\n",i);
+	}
+	/*
 	printf("strŒ^\n");
 	test_str();
 
@@ -110,6 +119,6 @@ int main(void){
 
 	printf("utilŠÖ”ŒQ\n");
 	test_util();
-
+	*/
 	return 0;
 }

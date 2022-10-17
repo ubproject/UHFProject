@@ -136,9 +136,10 @@
   <ItemGroup>
     <ClInclude Include="Sanae.h" />
     <ClInclude Include="UHF\SanaeFile.h" />
+    <ClInclude Include="UHF\SanaeMath.h" />
     <ClInclude Include="UHF\SanaeStr.h" />
     <ClInclude Include="UHF\UHFC\SanaeFilec.h" />
-    <ClInclude Include="UHF\UHFC\SanaeMath.h" />
+    <ClInclude Include="UHF\UHFC\SanaeMathc.h" />
     <ClInclude Include="UHF\UHFC\SanaeStrc.h" />
     <ClInclude Include="UHF\UHFC\SanaeUtil.h" />
     <ClInclude Include="UHF\UHFC\SanaeWchar.h" />

@@ -1,5 +1,5 @@
-#ifndef SANAEMATH_H
-#define SANAEMATH_H
+#ifndef SANAEMATHC_H
+#define SANAEMATHC_H
 
 
 /*INCLUDE*/
@@ -15,7 +15,7 @@ typedef long long     long64;
 /*整数を配列へ変換する際に使用する。*/
 typedef struct {
 	UINT* data;
-	UINT len;
+	UINT  len;
 }NUMS;
 
 /*分数処理を行う際に使用する。*/
@@ -135,10 +135,12 @@ double fraction_num(fraction data) {
 
 /*素数か素数でないかを判定します。*/
 bool is_primenum(UINT data) {
-	if (data == 1 || data == 2)return true;
-	if (data % 2 == 0)return false;
+	if (data == 1 || data == 2) return true;
+	if (data % 2 == 0)          return false;
+
 	for (UINT i = 3; i < data; i += 2)
-		if (data % i == 0)return false;
+		if (data % i == 0)      return false;
+
 	return true;
 }
 
