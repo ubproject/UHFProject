@@ -73,24 +73,51 @@ void test_math() {
 	//2^1/5を計算(下三桁)
 	printf("2^1/5=%lf\n", root(2, 5, 3));          //2^1/5=1.148
 
-	printf("Sanaemath.h");
-	time_t defs = time(NULL);
-	for (UINT i = 1; i <= 10000; i++) {
-		printf("%u^1/2=%lf\n", i, root(i, 2, 6));
+	//乱数を生成
+	UINT d = random(2, 10000);
+	printf("%uを素因数分解します。\n", d);
+	//コンテナを用意
+	std::vector<UINT> l;
+	factorization(l, d);
+	//出力
+	for (UINT i : l) {
+		printf("%u\n", i);
 	}
-	defs = time(NULL) - defs;
-	double bufs = (double)defs / 10000;
 
-	printf("math.h");
+	//スピード比較
+	printf("ここから時間のかかる処理を行います。\n");
+	//一時停止
+	wint_t none = _getwch();
+
+
+	printf("標準ファイルのsqrt関数での処理を行います。\n");
+	//一時停止
+	none = _getwch();
+	
+	//sqrt関数の処理をする時間を測る。
 	time_t defm = time(NULL);
 	for (UINT i = 1; i <= 10000; i++) {
 		printf("%u^1/2=%lf\n", i, sqrt(i));
 	}
 	defm = time(NULL) - defm;
+	//一回の処理の時間を計算
 	double bufm = (double)defm / 10000;
 
-	printf("SanaeMathは%lf秒かかりました\nMathは%lf秒かかりました。\n", bufm, bufs);
 
+	printf("Sanaemath.hでのroot関数での処理をおこないます。\n");
+	//一時停止
+	none = _getwch();
+
+	//root関数の処理する時間を測る。
+	time_t defs = time(NULL);
+	for (UINT i = 1; i <= 10000; i++) {
+		printf("%u^1/2=%lf\n", i, root(i,2,6));
+	}
+	defs = time(NULL) - defs;
+	//一回の処理の時間を計算
+	double bufs = (double)defs / 10000;
+
+	printf("SanaeMathは%lf秒かかりました\nMathは%lf秒かかりました。\n", bufs, bufm);
 	return;
 }
 void test_util() {
@@ -99,15 +126,7 @@ void test_util() {
 }
 
 int main(void){
-	UINT d = random(2,10000);
-	printf("%uを素因数分解します。\n",d);
-	std::vector<UINT> l;
-	factorization(l,d);
-
-	for (UINT i:l) {
-		printf("%u\n",i);
-	}
-	/*
+	
 	printf("str型\n");
 	test_str();
 
@@ -119,6 +138,6 @@ int main(void){
 
 	printf("util関数群\n");
 	test_util();
-	*/
+	
 	return 0;
 }

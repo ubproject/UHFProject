@@ -145,6 +145,7 @@ bool is_primenum(UINT data) {
 }
 
 
+
 /*rootnumæªdata‚Ì’l‚ð‹‚ß‚Ü‚·B
 digitnumŒ…‚Ü‚Å­”‚ð‹‚ß‚Ü‚·B
 */
@@ -162,8 +163,15 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 			break;
 		}
 	}
+
+	if (digitnum == 0)
+		return retdata;
+
+	double max_digit = ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum)));
+
 	/*×‚©‚¢Œ…‚ðŒ©‚Â‚¯‚é*/
-	for (double digit = 0.1; digit >= ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum))); digit /= 10) {
+	for (double digit = 0.1; digit >= max_digit; digit /= 10) {
+
 		for (double num = 0; num < ((double)10 * digit); num += digit) {
 			double buf = exponentiation((double)retdata + num, (UINT)rootnum);
 			
