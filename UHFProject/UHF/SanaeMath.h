@@ -14,7 +14,7 @@ template<typename T=double>
 constexpr bool IS_EQUAL(T X, T Y) { return SABSOLUTE(X - Y) < DBL_EPSILON; }
 
 
-/*‘fˆö”•ª‰ð‚ð‚µ‚Ü‚·B*/
+/*ç´ å› æ•°åˆ†è§£ã‚’ã—ã¾ã™*/
 template<typename T=UINT>
 std::vector<T>& factorization(std::vector<T>& data,T from) {
 	for (T i = 2;i<from;i+=1) {
