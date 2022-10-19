@@ -7,6 +7,13 @@
 #include <vector>
 
 
+template<typename T=double>
+constexpr auto SABSOLUTE(T X)     { return X < 0 ? X * -1 : X; }
+
+template<typename T=double>
+constexpr bool IS_EQUAL(T X, T Y) { return SABSOLUTE(X - Y) < DBL_EPSILON; }
+
+
 /*‘fˆö”•ª‰ð‚ð‚µ‚Ü‚·B*/
 template<typename T=UINT>
 std::vector<T>& factorization(std::vector<T>& data,T from) {

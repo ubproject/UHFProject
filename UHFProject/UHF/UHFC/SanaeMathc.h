@@ -167,10 +167,11 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 	if (digitnum == 0)
 		return retdata;
 
-	double max_digit = ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum)));
+	double min_digit = ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum)));
+	UINT count = 1;
 
 	/*×‚©‚¢Œ…‚ğŒ©‚Â‚¯‚é*/
-	for (double digit = 0.1; digit >= max_digit; digit /= 10) {
+	for (double digit = 0.1; digit >= min_digit; digit /= 10,count++) {
 
 		for (double num = 0; num < ((double)10 * digit); num += digit) {
 			double buf = exponentiation((double)retdata + num, (UINT)rootnum);
@@ -184,6 +185,16 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 			else if (num >= (9 * digit)) {
 				retdata += num;
 				break;
+			}
+		}
+
+		//ŒJ‚èã‚°ŒJ‚è‰º‚°‚ğs‚¤
+		if (count == digitnum) {
+			//10X^2=10X^2
+			double buf_ret = retdata * 10;
+			double buf = exponentiation((double)buf_ret + (5*digit), (UINT)rootnum);
+			if (buf <= (data * exponentiation((UINT)10,(UINT)rootnum))) {
+				retdata += digit;
 			}
 		}
 	}
