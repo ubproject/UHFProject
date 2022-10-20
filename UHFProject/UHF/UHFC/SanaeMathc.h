@@ -152,30 +152,40 @@ digitnum桁まで少数を求めます。
 double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 	if (digitnum > 6) digitnum = 6;
 	/*整数を見つける*/
+	//retdataに値を格納
 	double retdata = 0;
 	for (UINT i = 1; i <= data; i++) {
+		//iをrootnum乗した物がdataと同じ場合
 		if (exponentiation(i, (UINT)rootnum) == data) {
 			retdata = i;
 			return retdata;
 		}
+		//iをrootnum乗した物がdataを超えてしまった場合i-1を格納
 		else if (exponentiation(i, (UINT)rootnum) > data) {
 			retdata = (i - 1);
 			break;
 		}
 	}
 
+	//整数部のみ求めることが指定されている場合
 	if (digitnum == 0)
 		return retdata;
 
+	//最小値
 	double min_digit = ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum)));
+	//繰り上げ繰り下げを行う際に使用
 	UINT count = 1;
 
 	/*細かい桁を見つける*/
+	//0.1->0.01->0.001のように桁数を減らしていく
 	for (double digit = 0.1; digit >= min_digit; digit /= 10,count++) {
-
+		//0.01->0.02->0.03と増やしていく
 		for (double num = 0; num < ((double)10 * digit); num += digit) {
+
+			//整数部.小数第一位+小数第二位...の値
 			double buf = exponentiation((double)retdata + num, (UINT)rootnum);
 			
+			//整数部と同じように2乗して元の値を超えた場合num-1した値をretdataへ入れる。
 			if (buf > data) {
 				num     -= digit;
 				retdata += num;
@@ -190,9 +200,12 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 
 		//繰り上げ繰り下げを行う
 		if (count == digitnum) {
-			//10X^2=10X^2
+			//1.414213->14.14213
 			double buf_ret = retdata * 10;
+			//14.142135
 			double buf = exponentiation((double)buf_ret + (5*digit), (UINT)rootnum);
+			
+			//2乗の値を超えてしまった場合5以上なので繰り上げ
 			if (buf <= (data * exponentiation((UINT)10,(UINT)rootnum))) {
 				retdata += digit;
 			}
