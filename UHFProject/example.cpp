@@ -34,6 +34,8 @@ void test_str() {
 
 	//'a'‚Ì”‚ğ’²¸
 	printf("%u\n", _str.count('a')); //4
+
+	system("pause");
 	return;
 }
 void test_file() {
@@ -52,6 +54,8 @@ void test_file() {
 	_file.read(&text);
 	//o—Í
 	printf("%s\n", text.c_str());     //Copyright 2016 SanaeProject
+
+	system("pause");
 	return;
 }
 void test_math() {
@@ -97,12 +101,17 @@ void test_math() {
 	//sqrtŠÖ”‚Ìˆ—‚ğ‚·‚éŠÔ‚ğ‘ª‚éB
 	time_t defm = time(NULL);
 	for (UINT i = 1; i <= 10000; i++) {
-		printf("%u^1/2=%lf\n", i, sqrt(i));
+		volatile double data = sqrt(i);
+		printf("%u^1/2=%lf\n", i, data);
 	}
 	defm = time(NULL) - defm;
+	printf("sqrtŠÖ”‚Å‚Í10000‰ñ‚ÌŒvZ‚É%lld•b‚©‚©‚è‚Ü‚µ‚½B\n",defm);
+
 	//ˆê‰ñ‚Ìˆ—‚ÌŠÔ‚ğŒvZ
 	double bufm = (double)defm / 10000;
+	printf("ˆê‰ñ‚ÌŒvZ‚É:%lfƒ~ƒŠ•b‚©‚©‚è‚Ü‚µ‚½\n",bufm*1000);
 
+	system("pause");
 
 	printf("Sanaemath.h‚Å‚ÌrootŠÖ”‚Å‚Ìˆ—‚ğ‚¨‚±‚È‚¢‚Ü‚·B\n");
 	//ˆê’â~
@@ -111,18 +120,30 @@ void test_math() {
 	//rootŠÖ”‚Ìˆ—‚·‚éŠÔ‚ğ‘ª‚éB
 	time_t defs = time(NULL);
 	for (UINT i = 1; i <= 10000; i++) {
-		printf("%u^1/2=%lf\n", i, root(i,2,6));
+		volatile double data = root(i,2,6);
+		printf("%u^1/2=%lf\n", i, data);
 	}
 	defs = time(NULL) - defs;
+
+	printf("SanaeMath‚ÌrootŠÖ”‚Å‚Í%lld•b‚©‚©‚è‚Ü‚µ‚½B\n",defs);
+
+
 	//ˆê‰ñ‚Ìˆ—‚ÌŠÔ‚ğŒvZ
 	double bufs = (double)defs / 10000;
+	printf("ˆê‰ñ‚ÌŒvZ‚É%lfƒ~ƒŠ•b‚©‚©‚è‚Ü‚µ‚½B\n",bufs*1000);
+	
+	system("pause");
 
-	printf("SanaeMath‚Í%lf•b‚©‚©‚è‚Ü‚µ‚½\nMath‚Í%lf•b‚©‚©‚è‚Ü‚µ‚½B\n", bufs, bufm);
+	printf("\n\nSanaeMath‚Í%lfƒ~ƒŠ•b‚©‚©‚è‚Ü‚µ‚½\nMath‚Í%lfƒ~ƒŠ•b‚©‚©‚è‚Ü‚µ‚½B\n\n", bufs*1000, bufm*1000);
+
+	system("pause");
 	return;
 }
 void test_util() {
 	printf("1~9:%u\n",random(1,9));
 	printf("year:%u  day:%u  %u:%u:%u\n", get_year(), get_day(), get_hour(), get_minutes(), get_second());
+
+	system("pause");
 }
 
 
