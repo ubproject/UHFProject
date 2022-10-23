@@ -1,29 +1,34 @@
 # UHFProject目標
 ・使いやすく安全に使えるよう保守性を重視してプログラミングを行うようにする。  
-・標準ライブラリをあまり使わずできるだけ自分で考えたアルゴリズムを使うようにする。  
+・標準ライブラリをあまり使わずできるだけ自分で考えたアルゴリズムを使うようにする。
+# 詳細
+Project:UHF  
+Version:1.2  
+DEV:Sanae  
 # 構成
 ベースとしてC言語で記述したプログラムを集積しstr型やfile型を作成する。  
 Sanae.hによりすべてのヘッダーファイルをインクルードする。  
 Sanae.h  
-- SanaeUtil.h  
+- UHF/UHFC/SanaeUtil.h  
   * time.h
   * stdlib.h
-- SanaeMath.h  
+- UHF/SanaeMath.h  
+  * UHFC/SanaeMathc.h
   * stdlib.h  
-- SanaeStr.h  
-  * SanaeStrc.h  
+- UHF/SanaeStr.h  
+  * UHFC/SanaeStrc.h  
     1.  string.h  
     2.  stdlib.h  
     3.  stdio.h  
-  * SanaeWchar.h  
+  * UHFC/SanaeWchar.h  
     1.  SanaeStrc.h  
     2.  wchar.h  
     3.  locale.h  
     4.  stdlib.h  
   * stdexcept  
   * vector  
-- SanaeFile.h  
-  * SanaeFilec.h  
+- UHF/SanaeFile.h  
+  * UHFC/SanaeFilec.h  
     1.  stdio.h
     2.  SanaeStrc.h
 # 型/メンバ紹介
