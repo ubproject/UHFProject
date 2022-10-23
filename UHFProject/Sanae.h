@@ -1,7 +1,7 @@
 /*
 * Project:UHFProject
 * Author :Sanae
-* Version:1.2(Beta)
+* Version:1.3(Beta)
 */
 
 #ifndef SANAE_H
