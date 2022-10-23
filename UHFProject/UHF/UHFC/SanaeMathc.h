@@ -42,7 +42,7 @@ bool      is_primenum      (UINT);
 
 /*互いに素か判定する。*/
 bool      is_relatively_prime(UINT, UINT);
-UINT      relatively_prime   (UINT data, UINT min = 2);
+UINT      relatively_prime   (UINT, UINT);
 
 /*フィボナッチ数列を求める。*/
 UINT      fibonacci          (UINT);
