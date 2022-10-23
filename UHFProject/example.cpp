@@ -159,6 +159,7 @@ int main(void){
 
 	printf("utilŠÖ”ŒQ\n");
 	test_util();
+	
 
 	return 0;
 }

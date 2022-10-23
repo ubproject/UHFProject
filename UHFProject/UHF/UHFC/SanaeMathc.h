@@ -38,7 +38,14 @@ fraction& to_min(fraction&);
 double    fraction_num(fraction);
 
 /*素数判定*/
-bool   is_primenum(UINT);
+bool      is_primenum      (UINT);
+
+/*互いに素か判定する。*/
+bool      is_relatively_prime(UINT, UINT);
+UINT      relatively_prime   (UINT data, UINT min = 2);
+
+/*フィボナッチ数列を求める。*/
+UINT      fibonacci          (UINT);
 
 /*累乗根の計算*/
 double root(UINT ,MINI,MINI);
@@ -144,6 +151,53 @@ bool is_primenum(UINT data) {
 	return true;
 }
 
+
+/*dataと互いに素な値を出力します。(min以上も求めることができます。)*/
+UINT relatively_prime(UINT data,UINT min=2) {
+	UINT retdata = min;
+
+	if (is_primenum(data)) {
+		if (data!=retdata)
+			return retdata;
+
+		for (retdata = 3;;retdata+=2) {
+			if (data != retdata && is_primenum(retdata))
+				return retdata;
+		}
+	}
+
+	for (retdata = min;;retdata++) {
+		if (is_relatively_prime(retdata,data)) {
+			return retdata;
+		}
+	}
+}
+
+
+/*互いに素か評価する*/
+bool is_relatively_prime(UINT data1,UINT data2) {
+	if (data1 % 2 == 0 && data2 % 2 == 0)
+		return false;
+
+	for (UINT i = 3; i <= data1 && i <= data2;i+=2) {
+		if (is_primenum(i)) {
+			if (data1%i==0 && data2%i==0) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+
+//count目の値を返します。
+unsigned int fibonacci(unsigned int count) {
+	if (count<=2)
+		return 1;
+
+	return fibonacci(count-1)+fibonacci(count-2);
+}
 
 
 /*rootnum乗根dataの値を求めます。
