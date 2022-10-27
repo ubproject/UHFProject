@@ -148,7 +148,7 @@ void test_util() {
 
 
 int main(void){
-	printf("strŒ^\n");
+printf("strŒ^\n");
 	test_str();
 
 	printf("fileŒ^\n");
@@ -159,7 +159,6 @@ int main(void){
 
 	printf("utilŠÖ”ŒQ\n");
 	test_util();
-	
 
 	return 0;
 }

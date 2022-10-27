@@ -5,6 +5,7 @@
 /*INCLUDE*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 
 /*Define Types*/
@@ -26,12 +27,23 @@ typedef struct {
 	UINT denominator;
 }fraction;
 
+//乱数生成時使用
+#define S_RANDOM_A 48271
+#define S_RANDOM_M 2147483648-1
+
+//乱数生成時に使用する。
+struct LCGsT {
+	int  seed;
+	int  count;
+	bool is_set_seed;
+}LCGS_INFO = { 0, 0, false };
+
 
 /*Define Function*/
 /*累乗の計算*/
 UINT   exponentiation(UINT  , UINT);
 double exponentiation(double, UINT);
-double exponentiation(double from, double count,UINT);
+double exponentiation(double, double, UINT);
 
 /*分数の計算*/
 fraction& to_min(fraction&);
@@ -39,6 +51,12 @@ double    fraction_num(fraction);
 
 /*素数判定*/
 bool      is_primenum      (UINT);
+
+/*線形合同法による乱数生成*/
+//シード値を設定する。
+void SLCGs (int, int);
+//乱数生成
+int  LCGs  (int, int);
 
 /*互いに素か判定する。*/
 bool      is_relatively_prime(UINT, UINT);
@@ -188,6 +206,48 @@ bool is_relatively_prime(UINT data1,UINT data2) {
 	}
 
 	return true;
+}
+
+
+//seedに負の数が入力された場合自動で決めます。
+void SLCGs(int seed=-1,int count=10) {
+	LCGsT* lp       = &LCGS_INFO;
+
+	if (seed<0) {
+		union bufT{
+			time_t time;
+			UINT   show[sizeof time_t / sizeof UINT];
+		}gets;
+		gets.time = time(NULL);
+
+		seed = (int)gets.show[0] < 0 ? gets.show[0] * -1 : gets.show[0];
+	}
+
+	lp->seed        = seed;
+	lp->count       = count;
+	lp->is_set_seed = true;
+}
+
+
+/*乱数生成を行います。
+出典:
+https://ja.wikipedia.org/wiki/%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95
+*/
+int LCGs(int seed=-1,int count=LCGS_INFO.count) {
+	if (!LCGS_INFO.is_set_seed)
+		SLCGs(seed,count);
+
+	if (seed == -1)
+		seed = LCGS_INFO.seed;
+
+	for (int i = 0; i < count; i++) {
+		seed = (S_RANDOM_A * seed) % S_RANDOM_M;
+		if (seed<0) 
+			seed += S_RANDOM_M+1;
+	}
+
+	LCGS_INFO.count++;
+	return seed;
 }
 
 
