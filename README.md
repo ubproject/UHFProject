@@ -15,6 +15,7 @@ Sanae.h
 - UHF/SanaeMath.h  
   * UHFC/SanaeMathc.h
     1. stdlib.h  
+    2. time.h
   * vector.h
 - UHF/SanaeStr.h  
   * UHFC/SanaeStrc.h  
@@ -83,8 +84,7 @@ Sanae.h
 	//出力
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
-
-## SanaeMath.h
+## SanaeMathc.h
 	//2の5乗を計算
 	printf("%u\n",exponentiation((UINT)2, 5));  //32
 	
@@ -99,6 +99,20 @@ Sanae.h
 	
 	//2^1/5を計算(下三桁)
 	printf("2^1/5=%lf\n",root(2,5,3));          //2^1/5=1.148
+	
+	//LCGsによる乱数出力
+	printf("%d\n",LCGs()%10);
+
+## SanaeMath.h
+	//92を素因数分解
+	UINT a = 92;
+	std::vector<UINT> test;
+	
+	factorization(test,a);
+	
+	for(UINT i:test)
+		printf("%u",i);
+		
 ## SanaeUtil.h
 	//1~9までの整数を出力
 	printf("1~9:%u\n",random(1,9));
