@@ -3,7 +3,7 @@
 ・標準ライブラリをあまり使わずできるだけ自分で考えたアルゴリズムを使うようにする。
 # 詳細
 Project:UHF  
-Version:1.2  
+Version:1.0.0(Released)  
 DEV:Sanae  
 # 構成
 ベースとしてC言語で記述したプログラムを集積しstr型やfile型を作成する。  
