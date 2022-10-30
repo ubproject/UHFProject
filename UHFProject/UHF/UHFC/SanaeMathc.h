@@ -317,6 +317,7 @@ void MATH_FREE(NUMS* d) {
 	d->len = 0;
 }
 
+
 /*®”‚ğ”z—ñ‚Ö•ÏŠ·‚µ‚Ü‚·B*/
 bool to_array(NUMS* toarray, long64 data) {
 	MATH_FREE(toarray);

@@ -65,7 +65,7 @@ Sanae.h
 	Delta
 	*/
 	//'a'の数を調査
-	printf("%u\n", _str.count('a')); //4
+	printf("%llu\n", _str.count('a')); //4
 
 ## SanaeFile.h
 	//ファイル名SanaeProject.log
@@ -86,7 +86,7 @@ Sanae.h
 
 ## SanaeMathc.h
 	//2の5乗を計算
-	printf("%u\n",exponentiation((UINT)2, 5));  //32
+	printf("%llu\n",exponentiation((UINT)2, 5));  //32
 	
 	//11は素数か判定
 	printf("%d\n",is_primenum(11));             //true(1)
