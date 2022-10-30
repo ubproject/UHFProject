@@ -56,10 +56,7 @@ private:
 		}
 	}
 
-	/*debug*/
-	inline void view_info(UINT ID=0) {
-		printf("\ninfo(%u):\nSTR=(STRC)%s,(ALLOCATE)%u\nview_buf=(STRC)%s,(ALLOCATE)%u\n",ID,STR.str,STR.alloced,view_buf.str,view_buf.alloced);
-	}
+
 public:
 
 
@@ -99,7 +96,7 @@ public:
 
 
 	/*Operator*/
-	char& operator [](UINT location) {
+	char& operator [](ULONG64 location) {
 		if (STR.alloced<=location)
 			error("Failed to access to mem.Too many num to access.");
 
@@ -151,7 +148,7 @@ public:
 	}
 	//Get to Text.
 	const char* c_str(RANGE range = {0,0}) {
-		range.to = range.to == 0 ? (UINT)strlen(STR.str) : range.to;
+		range.to = range.to == 0 ? strlen(STR.str) : range.to;
 
 		if (!SUBSTRC(&view_buf,&STR,range))
 			error("Failed to process of STRC type.(c_str)");
@@ -166,11 +163,11 @@ public:
 		return WSTR.wstr;
 	}
 	//Get to allocate size.
-	UINT size() {
+	ULONG64 size() {
 		return STR.alloced * sizeof(char);
 	}
 	//Search specified char
-	long64 find(char data,UINT through=0) {
+	long64 find(char data,ULONG64 through=0) {
 		for (long64 i = 0; i < (long64)strlen(STR.str); i++) {
 			//Same data
 			if (*(STR.str + i) == data) {
@@ -184,9 +181,9 @@ public:
 		}
 		return -1;
 	}
-	long64 find(const char* data,UINT through=0) {
+	long64 find(const char* data,ULONG64 through=0) {
 		for (long64 i = 0;;i++) {
-			for (long64 j = 0, point = this->find(*(data + 0), (UINT)i); j < (long64)strlen(data); j++) {
+			for (long64 j = 0, point = this->find(*(data + 0), (ULONG64)i); j < (long64)strlen(data); j++) {
 				//If not found
 				if (point == -1) 
 					return -1;
@@ -205,26 +202,26 @@ public:
 			}
 		}
 	}
-	UINT count(char data) {
-		UINT retdata = 0;
+	ULONG64 count(char data) {
+		ULONG64 retdata = 0;
 
 		//If find char of "data" then add one to count.
-		for (UINT i = 0; i < STR.alloced;i++) if(STR.str[i] == data)
+		for (ULONG64 i = 0; i < STR.alloced;i++) if(STR.str[i] == data)
 			retdata += 1;
 
 		return retdata;
 	}
-	UINT count(const char* data) {
+	ULONG64 count(const char* data) {
 		//PreProcessing
-		UINT retdata = 0;
-		UINT datalen = (UINT)strlen(data);
+		ULONG64 retdata = 0;
+		ULONG64 datalen = strlen(data);
 
 		//MainProcess
-		for (UINT i = 0; i < STR.alloced;i++) {
+		for (ULONG64 i = 0; i < STR.alloced;i++) {
 			//If found char
 			if (STR.str[i]==data[0]) {
 				//Is same data?
-				for (UINT j = 0; j < datalen;j++) {
+				for (ULONG64 j = 0; j < datalen;j++) {
 					//lie
 					if (STR.str[i + j] != data[j])
 						break;
@@ -238,13 +235,13 @@ public:
 		return retdata;
 	}
 	/*最前列からtopointまで削除します。*/
-	str& erase_front(UINT topoint) {
-		SUBSTRC(&STR, &STR, {topoint+1,(UINT)strlen(STR.str)+1});
+	str& erase_front(ULONG64 topoint) {
+		SUBSTRC(&STR, &STR, {topoint+1,strlen(STR.str)+1});
 		//ret
 		return *this;
 	}
 	/*最後尾からtopointまで削除します。*/
-	str& erase_back(UINT topoint) {
+	str& erase_back(ULONG64 topoint) {
 		SUBSTRC(&STR, &STR, { 0,topoint-1 });
 		//ret
 		return *this;
@@ -279,9 +276,9 @@ public:
 		return *this;
 	}
 
-	str& replace(const char* from,const char* to,UINT through=0) {
+	str& replace(const char* from,const char* to,ULONG64 through=0) {
 		//PreProcessing
-		UINT found = (UINT)this->find(from,through);
+		ULONG64 found = this->find(from,through);
 		if (found == -1) return *this;
 		
 		STRC buf_front STRC_init;
@@ -291,9 +288,9 @@ public:
 
 		//MainProcess
 		if (found != 0) {
-			SUBSTRC(&buf_front, &this->STR, { 0,(UINT)found });
+			SUBSTRC(&buf_front, &this->STR, { 0,found });
 		}
-		SUBSTRC(&buf_back , &this->STR, {(UINT)found+(UINT)strlen(from),this->STR.alloced-1});
+		SUBSTRC(&buf_back , &this->STR, {found+strlen(from),this->STR.alloced-1});
 
 		//FinallyProcess
 		CONNECTSTRC(&buffer,buf_front.str,to);
@@ -316,8 +313,8 @@ public:
 		while ((i = this->find(divchr)) !=-1) {
 			STRC buf STRC_init;
 
-			SUBSTRC(&buf, &STR, {0,(UINT)i-1});
-			this->erase_front((UINT)i);
+			SUBSTRC(&buf, &STR, {0,(ULONG64)i-1});
+			this->erase_front(i);
 			str bufstr = buf.str;
 			to->push_back(bufstr);
 			
@@ -332,16 +329,18 @@ public:
 		return *this;
 	}
 #ifdef SANAEMATH_H
-	str operator +=(UINT data) {
+	str operator +=(ULONG64 data) {
 		return add(data);
 	}
-	str& add(UINT data) {
+	str& add(ULONG64 data) {
 		/*dを配列へ変換しておく*/
 		NUMS bufd = {NULL,0};
+
 		if (!to_array(&bufd, data))
 			return *this;
+
 		/*charへ変換*/
-		for (UINT i = 0; i < bufd.len;i++)
+		for (ULONG64 i = 0; i < (ULONG64)bufd.len;i++)
 			bufd.data[i] += '0';
 		
 		STRC buf STRC_init;
@@ -360,9 +359,14 @@ public:
 
 		WRITE(&STR,buf.str);
 
-		for (UINT i = (bufd.len-1),j=buf.alloced-1; i != 0; i--,j++) {
+		for (ULONG64 i = (bufd.len-1),j=buf.alloced-1; i != 0; i--,j++) {
+			if (bufd.data == NULL)
+				break;
+
 			WRITE(&STR, (char)bufd.data[i], j);
-			if ((i-1)==0)WRITE(&STR, (char)bufd.data[0], (j+1));
+
+			if ((i-1)==0)
+				WRITE(&STR, (char)bufd.data[0], (j+1));
 		}
 
 		MATH_FREE(&bufd);

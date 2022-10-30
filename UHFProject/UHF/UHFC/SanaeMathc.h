@@ -14,8 +14,8 @@ typedef long long     long64;
 
 /*整数を配列へ変換する際に使用する。*/
 typedef struct {
-	UINT* data;
-	UINT  len;
+	MINI*   data;
+	long64  len;
 }NUMS;
 
 /*分数処理を行う際に使用する。*/
@@ -40,22 +40,20 @@ struct LCGsT {
 
 /*Define Function*/
 /*累乗の計算*/
-UINT   exponentiation(UINT  , UINT);
-double exponentiation(double, UINT);
-double exponentiation(double, double, UINT);
+double    exponentiation(double, double, UINT);
 
 /*分数の計算*/
-fraction& to_min(fraction&);
+fraction& to_min      (fraction&);
 double    fraction_num(fraction);
 
 /*素数判定*/
-bool      is_primenum      (UINT);
+bool      is_primenum (UINT);
 
 /*線形合同法による乱数生成*/
 //シード値を設定する。
-void SLCGs (int, int);
+void      SLCGs (int, int);
 //乱数生成
-int  LCGs  (int, int);
+long64    LCGs  (int, int);
 
 /*互いに素か判定する。*/
 bool      is_relatively_prime(UINT, UINT);
@@ -65,40 +63,12 @@ UINT      relatively_prime   (UINT, UINT);
 UINT      fibonacci          (UINT);
 
 /*累乗根の計算*/
-double root(UINT ,MINI,MINI);
+double    root     (long64 ,MINI ,MINI );
 
 /*整数を配列へ変換*/
-void   MATH_FREE(NUMS*);
-bool   to_array (NUMS*,UINT);
-UINT   getnum   (UINT ,UINT);
-
-
-/*累乗の計算をします。(unsigned int)
-fromをcount回かけた数を返します。
-*/
-UINT exponentiation(UINT from, UINT count) {
-	if (count == 0)return 1;
-
-	UINT retdata = from;
-	for (UINT i = 1; i < count; i++)
-		retdata *= from;
-
-	return retdata;
-}
-
-
-/*累乗の計算をします。(double)
-fromをcount回かけた数を返します。
-*/
-double exponentiation(double from, UINT count) {
-	if (count == 0)return 1;
-
-	double retdata = from;
-	for (UINT i = 1; i < count; i++)
-		retdata *= from;
-	
-	return retdata;
-}
+void      MATH_FREE(NUMS*);
+bool      to_array (NUMS*,long64);
+UINT      getnum   (UINT ,UINT);
 
 
 /*累乗の計算をします。(double)
@@ -107,6 +77,16 @@ fromをcount(double)回かけた数を返します。
 double exponentiation(double from, double count,UINT digitnum=3) {
 	if (count == 0)return 1;
 	
+	if ((count-(long64)count)==0) {
+		if (count == 0) 
+			return 1;
+		double buf = from;
+		for (UINT i = 1; i < count; i++)
+			buf *= from;
+
+		return buf;
+	}
+
 	double retdata = from;
 	/*分母分子を決定*/
 	fraction b = {0,0};
@@ -123,29 +103,33 @@ double exponentiation(double from, double count,UINT digitnum=3) {
 
 /*約分を行います。*/
 fraction& to_min(fraction& data) {
-	double buf = (double)data.molecule / (double)data.denominator;
-	
-	if (buf == (UINT)buf) {
-		data.molecule = (UINT)buf;
-		data.denominator = 1;
+	if (is_primenum(data.denominator) || is_primenum(data.molecule))
 		return data;
-	}
-	
-	buf = (double)data.denominator / (double)data.molecule;
-	if (buf == (UINT)buf) {
-		data.molecule = 1;
-		data.denominator = (UINT)buf;
-		return data;
-	}
-	for (double i = 2; i < data.denominator && i < data.molecule; i++) {
-		double bufden = data.denominator / i;
-		double bufmol = data.molecule    / i;
 
-		if ((bufden - (UINT)bufden) == 0 && (bufmol - (UINT)bufmol) == 0) {
-			data.denominator /= (UINT)i;
-			data.molecule    /= (UINT)i;
+	if (data.denominator%data.molecule == 0) 
+	{	
+		data.denominator /= data.molecule;
+		data.molecule     = 1;
+		
+		return data;
+	}
+	else if(data.molecule%data.denominator == 0) 
+	{
+		data.molecule    /= data.denominator;
+		data.denominator  = 1;
+
+		return data;
+	}
+
+	for (UINT i = 2; i < data.denominator && i < data.molecule;i++) {
+		if (data.denominator%i==0 && data.molecule%i==0) 
+		{
+			data.denominator /= i;
+			data.molecule    /= i;
+
 			i = 2;
 		}
+
 	}
 	return data;
 }
@@ -216,8 +200,7 @@ void SLCGs(int seed=-1,int count=10) {
 		union bufT{
 			time_t time;
 			UINT   show[sizeof time_t / sizeof UINT];
-		}gets;
-		gets.time = time(NULL);
+		}gets = {time(NULL)};
 
 		seed = (int)gets.show[0] < 0 ? gets.show[0] * -1 : gets.show[0];
 	}
@@ -232,7 +215,7 @@ void SLCGs(int seed=-1,int count=10) {
 出典:
 https://ja.wikipedia.org/wiki/%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95
 */
-int LCGs(int seed=-1,int count=LCGS_INFO.count) {
+long64 LCGs(int seed=-1,int count=LCGS_INFO.count) {
 	if (!LCGS_INFO.is_set_seed)
 		SLCGs(seed,count);
 
@@ -251,7 +234,7 @@ int LCGs(int seed=-1,int count=LCGS_INFO.count) {
 
 
 //count目の値を返します。
-unsigned int fibonacci(unsigned int count) {
+long64 fibonacci(long64 count) {
 	if (count<=2)
 		return 1;
 
@@ -262,20 +245,20 @@ unsigned int fibonacci(unsigned int count) {
 /*rootnum乗根dataの値を求めます。
 digitnum桁まで少数を求めます。
 */
-double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
+double root(long64 data, MINI rootnum = 2, MINI digitnum = 3) {
 	if (digitnum > 6) digitnum = 6;
 	/*整数を見つける*/
 	//retdataに値を格納
 	double retdata = 0;
-	for (UINT i = 1; i <= data; i++) {
+
+	for (long64 i = 1; i <= data; i++) {
 		//iをrootnum乗した物がdataと同じ場合
-		if (exponentiation(i, (UINT)rootnum) == data) {
-			retdata = i;
-			return retdata;
+		if (exponentiation((double)i, (double)rootnum) == data) {
+			return (double)i;
 		}
 		//iをrootnum乗した物がdataを超えてしまった場合i-1を格納
-		else if (exponentiation(i, (UINT)rootnum) > data) {
-			retdata = (i - 1);
+		else if (exponentiation((double)i, (double)rootnum) > data) {
+			retdata = (double)(i - 1);
 			break;
 		}
 	}
@@ -285,9 +268,9 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 		return retdata;
 
 	//最小値
-	double min_digit = ((double)1 / ((double)exponentiation((UINT)10, (UINT)digitnum)));
+	double min_digit = ((double)1 / ((double)exponentiation((double)10, (double)digitnum)));
 	//繰り上げ繰り下げを行う際に使用
-	UINT count = 1;
+	long64 count = 1;
 
 	/*細かい桁を見つける*/
 	//0.1->0.01->0.001のように桁数を減らしていく
@@ -296,7 +279,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 		for (double num = 0; num < ((double)10 * digit); num += digit) {
 
 			//整数部.小数第一位+小数第二位...の値
-			double buf = exponentiation((double)retdata + num, (UINT)rootnum);
+			double buf = exponentiation((double)retdata + num, rootnum);
 			
 			//整数部と同じように2乗して元の値を超えた場合num-1した値をretdataへ入れる。
 			if (buf > data) {
@@ -316,10 +299,10 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 			//1.414213->14.14213
 			double buf_ret = retdata * 10;
 			//14.142135
-			double buf = exponentiation((double)buf_ret + (5*digit), (UINT)rootnum);
+			double buf = exponentiation((double)buf_ret + (5*digit), rootnum);
 			
 			//2乗の値を超えてしまった場合5以上なので繰り上げ
-			if (buf <= (data * exponentiation((UINT)10,(UINT)rootnum))) {
+			if (buf <= (data * exponentiation(10,rootnum))) {
 				retdata += digit;
 			}
 		}
@@ -328,32 +311,35 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 }
 
 
+/*NUMS用*/
 void MATH_FREE(NUMS* d) {
 	free(d->data);
 	d->len = 0;
 }
 
-
 /*整数を配列へ変換します。*/
-bool to_array(NUMS* toarray, UINT data) {
+bool to_array(NUMS* toarray, long64 data) {
 	MATH_FREE(toarray);
+	
 	/*桁数を求める*/
-	UINT digit = 1;
-	for (UINT i = 10; (i - 1) < data; i *= 10, i += 1,digit++);
+	long64 digit = 1;
+	for (long64 i = 10; (i - 1) < data; i *= 10, i += 1,digit++);
+	
 	/*桁数分確保する*/
-	if ((toarray->data=(UINT*)calloc(digit,sizeof(UINT)))==NULL)return false;
+	if ((toarray->data=(MINI*)calloc(digit,sizeof(MINI)))==NULL)return false;
 	toarray->len = digit;
+
 	/*ここから格納していく*/
-	for (UINT i = 0; i < digit-1;i++) {
+	for (long64 i = 0; i < digit-1;i++) {
 		/*下の桁から取り出していく*/
-		UINT buf = data;
+		long64 buf = data;
 		data /= 10;
 		data *= 10;
-		toarray->data[i] = buf - data;
+		toarray->data[i] = (MINI)(buf - data);
 		data /= 10;
 
 		if (data<10) {
-			toarray->data[i + 1] = data;
+			toarray->data[i + 1] = (MINI)data;
 			return true;
 		}
 	}
@@ -364,7 +350,7 @@ bool to_array(NUMS* toarray, UINT data) {
 /*指定した桁の値を入手します。
 失敗した場合0を返します。
 */
-UINT getnum(UINT from,UINT digitnum) {
+MINI getnum(MINI from,MINI digitnum) {
 	if (digitnum == 0)return 0;
 
 	NUMS buf = {NULL,0};
@@ -374,8 +360,10 @@ UINT getnum(UINT from,UINT digitnum) {
 		MATH_FREE(&buf);
 		return 0;
 	}
-
-	UINT retdata = buf.data[digitnum - 1];
+	if (buf.data==NULL) 
+		return 0;
+	
+	MINI retdata = buf.data[digitnum - 1];
 
 	MATH_FREE(&buf);
 	return retdata;

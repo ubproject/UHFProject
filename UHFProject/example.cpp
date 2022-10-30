@@ -33,7 +33,7 @@ void test_str() {
 	*/
 
 	//'a'‚Ì”‚ğ’²¸
-	printf("%u\n", _str.count('a')); //4
+	printf("%llu\n", _str.count('a')); //4
 
 	system("pause");
 	return;
@@ -60,7 +60,7 @@ void test_file() {
 }
 void test_math() {
 	//2‚Ì5æ‚ğŒvZ
-	printf("%u\n", exponentiation((UINT)2, 5));  //32
+	printf("%lf\n", exponentiation((double)2, (double)5));  //32
 
 	//2‚Ì0.5æ‚ğŒvZ
 	printf("%lf\n", exponentiation(2, 0.5, 3));  //1.414
@@ -148,7 +148,10 @@ void test_util() {
 
 
 int main(void){
-printf("strŒ^\n");
+	printf("%lld",LCGs()%10);
+	system("pause");
+
+	printf("strŒ^\n");
 	test_str();
 
 	printf("fileŒ^\n");
@@ -159,6 +162,6 @@ printf("strŒ^\n");
 
 	printf("utilŠÖ”ŒQ\n");
 	test_util();
-
+	
 	return 0;
 }
