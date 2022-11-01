@@ -3,7 +3,7 @@
 ・標準ライブラリをあまり使わずできるだけ自分で考えたアルゴリズムを使うようにする。
 # 詳細
 Project:UHF  
-Version:1.0.1(Released)  
+Version:1.0.2  
 DEV:Sanae  
 # 構成
 ベースとしてC言語で記述したプログラムを集積しstr型やfile型を作成する。  
@@ -16,6 +16,7 @@ Sanae.h
   * UHFC/SanaeMathc.h
     1. stdlib.h  
     2. time.h
+    3. limits.h
   * vector.h
 - UHF/SanaeStr.h  
   * UHFC/SanaeStrc.h  
