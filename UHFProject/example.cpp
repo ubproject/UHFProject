@@ -148,9 +148,6 @@ void test_util() {
 
 
 int main(void){
-	printf("%lld",LCGs()%10);
-	system("pause");
-
 	printf("strå^\n");
 	test_str();
 

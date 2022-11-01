@@ -4,20 +4,18 @@
 
 /*INCLUDE*/
 #include <stdlib.h>
-#include <limits.h>
 #include <time.h>
 
 
 /*Define Types*/
-typedef unsigned char      MINI;
-typedef unsigned int       UINT;
-typedef long long          long64;
-typedef unsigned long long ULONG64;
+typedef unsigned int  UINT;
+typedef unsigned char MINI;
+typedef long long     long64;
 
 /*整数を配列へ変換する際に使用する。*/
 typedef struct {
-	MINI*    data;
-	ULONG64  len;
+	MINI*   data;
+	long64  len;
 }NUMS;
 
 /*分数処理を行う際に使用する。*/
@@ -34,13 +32,10 @@ typedef struct {
 
 //乱数生成時に使用する。
 struct LCGsT {
-	ULONG64   seed;
-	ULONG64   count;
-	bool      is_set_seed;
+	int  seed;
+	int  count;
+	bool is_set_seed;
 }LCGS_INFO = { 0, 0, false };
-
-//整数かどうか判別する。
-#define is_int(A)((A-(ULONG64)A)==0)
 
 
 /*Define Function*/
@@ -56,24 +51,24 @@ bool      is_primenum (UINT);
 
 /*線形合同法による乱数生成*/
 //シード値を設定する。
-void      SLCGs (long64, ULONG64);
+void      SLCGs (int, int);
 //乱数生成
-ULONG64   LCGs  (long64, ULONG64);
+long64    LCGs  (int, int);
 
 /*互いに素か判定する。*/
 bool      is_relatively_prime(UINT, UINT);
 UINT      relatively_prime   (UINT, UINT);
 
 /*フィボナッチ数列を求める。*/
-ULONG64   fibonacci(ULONG64);
+UINT      fibonacci          (UINT);
 
 /*累乗根の計算*/
-double    root     (UINT, MINI, MINI);
+double    root     (long64 ,MINI ,MINI );
 
 /*整数を配列へ変換*/
 void      MATH_FREE(NUMS*);
-bool      to_array (NUMS*, ULONG64);
-MINI      getnum   (MINI , MINI);
+bool      to_array (NUMS*,long64);
+UINT      getnum   (UINT ,UINT);
 
 
 /*累乗の計算をします。(double)
@@ -82,10 +77,9 @@ fromをcount(double)回かけた数を返します。
 double exponentiation(double from, double count,UINT digitnum=3) {
 	if (count == 0)return 1;
 	
-	if (is_int(count)) {
+	if ((count-(long64)count)==0) {
 		if (count == 0) 
 			return 1;
-
 		double buf = from;
 		for (UINT i = 1; i < count; i++)
 			buf *= from;
@@ -97,12 +91,12 @@ double exponentiation(double from, double count,UINT digitnum=3) {
 	/*分母分子を決定*/
 	fraction b = {0,0};
 	
-	for (b.denominator = 1; (is_int(count * b.denominator)) != 0; b.denominator *= 10);
+	for (b.denominator = 1; ((count * b.denominator) - (UINT)(count*b.denominator)) != 0; b.denominator *= 10);
 	b.molecule = (UINT)((double)count * (double)b.denominator);
 
 	to_min(b);
 
-	UINT d = (UINT)exponentiation(from,(double)b.molecule);
+	UINT d = (UINT)exponentiation(from,b.molecule);
 	return root(d,b.denominator,digitnum);
 }
 
@@ -159,9 +153,7 @@ bool is_primenum(UINT data) {
 }
 
 
-/*dataと互いに素な値を出力します。(min以上も求めることができます。)
-* 失敗した場合0を返します。
-*/
+/*dataと互いに素な値を出力します。(min以上も求めることができます。)*/
 UINT relatively_prime(UINT data,UINT min=2) {
 	UINT retdata = min;
 
@@ -175,8 +167,7 @@ UINT relatively_prime(UINT data,UINT min=2) {
 		}
 	}
 
-	for (retdata = min;retdata <= UINT_MAX;retdata++) {
-	
+	for (retdata = min;;retdata++) {
 		if (is_relatively_prime(retdata,data)) {
 			return retdata;
 		}
@@ -189,9 +180,12 @@ bool is_relatively_prime(UINT data1,UINT data2) {
 	if (data1 % 2 == 0 && data2 % 2 == 0)
 		return false;
 
-	for (UINT i = 3; i <= data1 && i <= data2;i+=1) {
-		if (data1%i==0 && data2%i==0)
+	for (UINT i = 3; i <= data1 && i <= data2;i+=2) {
+		if (is_primenum(i)) {
+			if (data1%i==0 && data2%i==0) {
 				return false;
+			}
+		}
 	}
 
 	return true;
@@ -199,19 +193,19 @@ bool is_relatively_prime(UINT data1,UINT data2) {
 
 
 //seedに負の数が入力された場合自動で決めます。
-void SLCGs(long64 _seed=-1,ULONG64 count=10) {
+void SLCGs(int seed=-1,int count=10) {
 	LCGsT* lp       = &LCGS_INFO;
 
-	if (_seed<0) {
+	if (seed<0) {
 		union bufT{
 			time_t time;
 			UINT   show[sizeof time_t / sizeof UINT];
 		}gets = {time(NULL)};
 
-		_seed *= -1 * (ULONG64)gets.show[0];
+		seed = (int)gets.show[0] < 0 ? gets.show[0] * -1 : gets.show[0];
 	}
 
-	lp->seed        = (ULONG64)_seed;
+	lp->seed        = seed;
 	lp->count       = count;
 	lp->is_set_seed = true;
 }
@@ -221,26 +215,26 @@ void SLCGs(long64 _seed=-1,ULONG64 count=10) {
 出典:
 https://ja.wikipedia.org/wiki/%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95
 */
-ULONG64 LCGs(long64 seed=-1,ULONG64 count=LCGS_INFO.count) {
+long64 LCGs(int seed=-1,int count=LCGS_INFO.count) {
 	if (!LCGS_INFO.is_set_seed)
 		SLCGs(seed,count);
 
-	if (seed < 0)
+	if (seed == -1)
 		seed = LCGS_INFO.seed;
 
-	ULONG64 retdata = (ULONG64)seed;
-
-	//符号なしオペランドの計算の場合はオーバーフローしない。
-	for (ULONG64 i = 0; i < count; i++)
-		retdata = (S_RANDOM_A * retdata) % S_RANDOM_M;
+	for (int i = 0; i < count; i++) {
+		seed = (S_RANDOM_A * seed) % S_RANDOM_M;
+		if (seed<0) 
+			seed += S_RANDOM_M+1;
+	}
 
 	LCGS_INFO.count++;
-	return retdata;
+	return seed;
 }
 
 
 //count目の値を返します。
-ULONG64 fibonacci(ULONG64 count) {
+long64 fibonacci(long64 count) {
 	if (count<=2)
 		return 1;
 
@@ -251,13 +245,13 @@ ULONG64 fibonacci(ULONG64 count) {
 /*rootnum乗根dataの値を求めます。
 digitnum桁まで少数を求めます。
 */
-double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
+double root(long64 data, MINI rootnum = 2, MINI digitnum = 3) {
 	if (digitnum > 6) digitnum = 6;
 	/*整数を見つける*/
 	//retdataに値を格納
 	double retdata = 0;
 
-	for (UINT i = 1; i <= data; i++) {
+	for (long64 i = 1; i <= data; i++) {
 		//iをrootnum乗した物がdataと同じ場合
 		if (exponentiation((double)i, (double)rootnum) == data) {
 			return (double)i;
@@ -276,7 +270,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 	//最小値
 	double min_digit = ((double)1 / ((double)exponentiation((double)10, (double)digitnum)));
 	//繰り上げ繰り下げを行う際に使用
-	UINT count = 1;
+	long64 count = 1;
 
 	/*細かい桁を見つける*/
 	//0.1->0.01->0.001のように桁数を減らしていく
@@ -285,7 +279,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 		for (double num = 0; num < ((double)10 * digit); num += digit) {
 
 			//整数部.小数第一位+小数第二位...の値
-			double buf = exponentiation(retdata + num, rootnum);
+			double buf = exponentiation((double)retdata + num, rootnum);
 			
 			//整数部と同じように2乗して元の値を超えた場合num-1した値をretdataへ入れる。
 			if (buf > data) {
@@ -301,7 +295,7 @@ double root(UINT data, MINI rootnum = 2, MINI digitnum = 3) {
 		}
 
 		//繰り上げ繰り下げを行う
-		if (count == (UINT)digitnum) {
+		if (count == digitnum) {
 			//1.414213->14.14213
 			double buf_ret = retdata * 10;
 			//14.142135
@@ -325,21 +319,21 @@ void MATH_FREE(NUMS* d) {
 
 
 /*整数を配列へ変換します。*/
-bool to_array(NUMS* toarray, ULONG64 data) {
+bool to_array(NUMS* toarray, long64 data) {
 	MATH_FREE(toarray);
 	
 	/*桁数を求める*/
-	ULONG64 digit = 1;
-	for (ULONG64 i = 10; (i - 1) < data; i *= 10, i += 1,digit++);
+	long64 digit = 1;
+	for (long64 i = 10; (i - 1) < data; i *= 10, i += 1,digit++);
 	
 	/*桁数分確保する*/
 	if ((toarray->data=(MINI*)calloc(digit,sizeof(MINI)))==NULL)return false;
 	toarray->len = digit;
 
 	/*ここから格納していく*/
-	for (ULONG64 i = 0; i < digit-1;i++) {
+	for (long64 i = 0; i < digit-1;i++) {
 		/*下の桁から取り出していく*/
-		ULONG64 buf = data;
+		long64 buf = data;
 		data /= 10;
 		data *= 10;
 		toarray->data[i] = (MINI)(buf - data);
@@ -375,4 +369,5 @@ MINI getnum(MINI from,MINI digitnum) {
 	MATH_FREE(&buf);
 	return retdata;
 }
+
 #endif

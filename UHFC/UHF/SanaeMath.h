@@ -10,10 +10,8 @@
 template<typename T=double>
 constexpr auto SABSOLUTE(T X)     { return X < 0 ? X * -1 : X; }
 
-#define SANAEMATH_ERROR 1.0E-6    //0.000001までの誤差であれば許容する。
-
 template<typename T=double>
-constexpr bool IS_EQUAL(T A, T B) { return SABSOLUTE(A - B) <= SANAEMATH_ERROR; }
+constexpr bool IS_EQUAL(T X, T Y) { return SABSOLUTE(X - Y) < DBL_EPSILON; }
 
 
 //素因数分解を行います。
