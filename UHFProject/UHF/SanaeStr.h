@@ -20,11 +20,11 @@ private:
 
 
 	/*char*/
-	STRC STR;
-	STRC view_buf;
+	STRC STR;      //処理用
+	STRC view_buf; //表示出力用
 	
 	/*wchar_t*/
-	WSTRC WSTR;
+	WSTRC WSTR;    //wchar_t操作用
 
 
 	void setnull(){
@@ -147,8 +147,12 @@ public:
 		return add(text.STR.str);
 	}
 	//Get to Text.
-	const char* c_str(RANGE range = {0,0}) {
-		range.to = range.to == 0 ? strlen(STR.str) : range.to;
+	const char* c_str(RANGE range = {1,0}) {
+		bool is_default = range.from > range.to;
+		if (is_default) {
+			range.to   = strlen(STR.str);
+			range.from = 0;
+		}
 
 		if (!SUBSTRC(&view_buf,&STR,range))
 			error("Failed to process of STRC type.(c_str)");
@@ -246,9 +250,12 @@ public:
 		//ret
 		return *this;
 	}
-	str& erase(RANGE range = {0,0}) {
+	//fromのほうがtoより大きい場合すべて削除します。(初期値)
+	str& erase(RANGE range = {1,0}) {
 		//PreProcessing
-		range.to = range.to == 0 ? this->STR.alloced - 1 : range.to;
+		bool is_default = range.from > range.to;
+		if (is_default)
+			range = {0,this->STR.alloced-1};
 
 		STRC buf_front STRC_init;
 		STRC buf_back  STRC_init;
@@ -304,27 +311,55 @@ public:
 		//ret
 		return *this;
 	}
-	str& division(std::vector<str>* to,char divchr) {
+	str& division(std::vector<str>* to, char divchr) {
 		//PreProcessing
 		STRC buf_STR STRC_init;
-		equal(&buf_STR,this->STR.str);
+		equal(&buf_STR, this->STR.str);
 
 		long64 i = 0;
-		while ((i = this->find(divchr)) !=-1) {
+		while ((i = this->find(divchr)) != -1) {
 			STRC buf STRC_init;
 
-			SUBSTRC(&buf, &STR, {0,(ULONG64)i-1});
+			SUBSTRC(&buf, &STR, { 0,(ULONG64)i - 1 });
 			this->erase_front(i);
 			str bufstr = buf.str;
 			to->push_back(bufstr);
-			
+
 			STRC_fin(buf);
 		}
 		str buf = this->STR.str;
 		to->push_back(buf);
 
-		equal(&this->STR,buf_STR.str);
+		equal(&this->STR, buf_STR.str);
 		STRC_fin(buf_STR);
+
+		return *this;
+	}
+	str& to_uppercase(RANGE _range = {1,0}) {
+		bool is_default = _range.from > _range.to;
+		if (is_default)
+			_range = {0,this->STR.alloced-1};
+		
+		MINI buf_ran = 'a' - 'A';
+
+		for (ULONG64 i = _range.from; i <= _range.to;i++) {
+			if (IS_LOWERCASE(this->STR.str[i]))
+				this->STR.str[i] -= buf_ran;
+		}
+
+		return *this;
+	}
+	str& to_lowercase(RANGE _range = {1,0}) {
+		bool is_default = _range.from > _range.to;
+		if (is_default)
+			_range = { 0,this->STR.alloced - 1 };
+
+		MINI buf_ran = 'a' - 'A';
+
+		for (ULONG64 i = _range.from; i <= _range.to; i++) {
+			if (IS_UPPERCASE(this->STR.str[i]))
+				this->STR.str[i] += buf_ran;
+		}
 
 		return *this;
 	}

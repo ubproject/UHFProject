@@ -175,12 +175,14 @@ UINT relatively_prime(UINT data,UINT min=2) {
 		}
 	}
 
-	for (retdata = min;retdata <= UINT_MAX;retdata++) {
+	for (retdata = min;retdata < UINT_MAX;retdata++) {
 	
 		if (is_relatively_prime(retdata,data)) {
 			return retdata;
 		}
 	}
+
+	return 0;
 }
 
 

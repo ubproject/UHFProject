@@ -148,6 +148,11 @@ void test_util() {
 
 
 int main(void){
+	str i = "hello";
+	i.to_uppercase({1,4});
+	printf("%s", i.c_str({0,2}));
+
+	/*
 	printf("strŒ^\n");
 	test_str();
 
@@ -159,6 +164,6 @@ int main(void){
 
 	printf("utilŠÖ”ŒQ\n");
 	test_util();
-	
+	*/
 	return 0;
 }

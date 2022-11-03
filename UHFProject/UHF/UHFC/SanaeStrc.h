@@ -206,6 +206,18 @@ bool SUBSTRC(STRC* to, STRC* from, RANGE range) {
 	return true;
 }
 
+bool IS_UPPERCASE(char _d) {
+	if ('A' <= _d && _d <='Z')
+		return true;
+	return false;
+}
+
+bool IS_LOWERCASE(char _d) {
+	if ('a' <= _d && _d <= 'z')
+		return true;
+	return false;
+}
+
 
 /*Utility Function*/
 
