@@ -131,9 +131,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="example.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Sanae.h" />
     <ClInclude Include="UHF\SanaeFile.h" />
     <ClInclude Include="UHF\SanaeMath.h" />
@@ -146,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="example.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
