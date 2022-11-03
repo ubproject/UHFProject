@@ -5,6 +5,7 @@
 Project:UHF  
 Version:1.0.2  
 DEV:Sanae  
+
 # 構成
 ベースとしてC言語で記述したプログラムを集積しstr型やfile型を作成する。  
 Sanae.hによりすべてのヘッダーファイルをインクルードする。  
