@@ -14,21 +14,20 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="ヘッダー ファイル\UHF">
-      <UniqueIdentifier>{e8177b50-34fb-4502-8c49-3fe3a9be1708}</UniqueIdentifier>
+      <UniqueIdentifier>{1e9d64aa-b3b0-49f4-ab85-dc32540fa3f0}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\UHF\UHFC">
-      <UniqueIdentifier>{09ea89a8-7d9a-49ff-ba98-b736700df827}</UniqueIdentifier>
+      <UniqueIdentifier>{3f72a413-7fcc-48f1-b6c4-1c8e6b842706}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sanae.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="UHF\SanaeFile.h">
-      <Filter>ヘッダー ファイル\UHF</Filter>
-    </ClInclude>
-    <ClInclude Include="UHF\SanaeStr.h">
-      <Filter>ヘッダー ファイル\UHF</Filter>
+    <None Include="..\README.md">
+      <Filter>ソース ファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UHF\UHFC\SanaeC.h">
+      <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
     <ClInclude Include="UHF\UHFC\SanaeFilec.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
@@ -39,23 +38,27 @@
     <ClInclude Include="UHF\UHFC\SanaeStrc.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
+    <ClInclude Include="UHF\UHFC\SanaeUtilc.h">
+      <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
+    </ClInclude>
     <ClInclude Include="UHF\UHFC\SanaeWchar.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
-    <ClInclude Include="UHF\UHFC\SanaeUtil.h">
+    <ClInclude Include="UHF\UHFC\SanaeTypes.h">
       <Filter>ヘッダー ファイル\UHF\UHFC</Filter>
     </ClInclude>
-    <ClInclude Include="UHF\SanaeMath.h">
+    <ClInclude Include="UHF\Sanae.h">
+      <Filter>ヘッダー ファイル\UHF</Filter>
+    </ClInclude>
+    <ClInclude Include="UHF\SanaeStatistics.h">
+      <Filter>ヘッダー ファイル\UHF</Filter>
+    </ClInclude>
+    <ClInclude Include="UHF\SanaeStr.h">
       <Filter>ヘッダー ファイル\UHF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md">
-      <Filter>ソース ファイル</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="example.cpp">
+    <ClCompile Include="UHF.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

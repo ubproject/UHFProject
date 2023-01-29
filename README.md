@@ -10,64 +10,89 @@ DEV:Sanae
 ベースとしてC言語で記述したプログラムを集積しstr型やfile型を作成する。  
 Sanae.hによりすべてのヘッダーファイルをインクルードする。  
 Sanae.h  
-- UHF/UHFC/SanaeUtil.h  
+- UHF/UHFC/SanaeUtilc.h  
   * time.h
+  * stdio.h
   * stdlib.h
-- UHF/SanaeMath.h  
-  * UHFC/SanaeMathc.h
-    1. stdlib.h  
-    2. time.h
-    3. limits.h
-  * vector.h
+  * SanaeTypes.h
+- UHF/UHFC/SanaeMath.h  
+  * stdlib.h  
+  * time.h
+  * limits.h
+  * SanaeTypes.h
 - UHF/SanaeStr.h  
   * UHFC/SanaeStrc.h  
     1.  string.h  
     2.  stdlib.h  
     3.  stdio.h  
+	4.	SanaeTypes.h
   * UHFC/SanaeWchar.h  
-    1.  SanaeStrc.h  
-    2.  wchar.h  
-    3.  locale.h  
-    4.  stdlib.h  
+    1.  SanaeStrc.h
+	2.	SanaeTypes.h
+    3.  wchar.h  
+    4.  locale.h  
+    5.  stdlib.h  
   * stdexcept  
-  * vector  
-- UHF/SanaeFile.h  
-  * UHFC/SanaeFilec.h  
-    1.  stdio.h
-    2.  SanaeStrc.h
+  * vector 
+  * SanaeTypes.h
+
 # 型/メンバ紹介
 ## SanaeStr.h
-	//代入
-	str _str = "Hello";  //Hello
-	
-	//文字列・数字の追加
-	_str.add("Hello");   //HelloHell
-	_str.add(2022);      //HelloHello2022
-	
-	//0~4までの文字列を削除
-	_str.erase({0,4});   //Hello2022
-	
-	//表示
-	printf("%s\n",   _str.c_str());  //Hello2022
-	wprintf(L"%s\n", _str.c_wstr()); //Hello2022
-	
-	//Alpha,Bravo,Charlie,Deltaを代入
-	_str = "Alpha,Bravo,Charlie,Delta";
-	//分割用のコンテナを用意
-	std::vector<str> str_array;
-	//特定の文字(',')で分割し分割したデータをstr_arrayに格納
-	_str.division(&str_array,',');
-	for (str i:str_array) {
-		printf("%s\n",i.c_str());
-	}
+	//Samapleで初期化
+	str sample_str = "Sample";
+	printf("文字列:%s\n", sample_str.c_str());	//文字列:Sample
+
+
+	//ワイド文字を代入
+	sample_str = L"Hello\n";
+	wprintf(sample_str.c_wstr());				//Hello
+
+
+	//数値を代入
+	sample_str = 1234;
+	printf("%s\n", sample_str.c_str());			//1234
+
+
+	//文字追加									//1234です。12
+	sample_str += "です。12";
+	//sample_str.add("です。12");
+
+
+	//数値に変換(最初から最後まで)
+	Ulong i = sample_str.to_ulong(RANGE_DEFAULT);
+	printf("数値は:%llu\n", i);					//123412
+
+
+	//文字列を入れ替える World->Sanae
+	sample_str = "HelloWorld";
+	sample_str.replace("World", "Sanae");
+	printf("入れ替え後:%s\n", sample_str.c_str());//HelloSanae
+
+
+	//文字列を特定文字で分割する。(',')
+	sample_str = "alpha,bravo,delta,eco";
+	std::vector<str> test;
+	sample_str.division(&test, ',');
+	//表示する
+	for (str i : test)
+		printf("%s\n", i.c_str());
 	/*
-	Alpha
-	Bravo
-	Charlie
-	Delta
+	alpha
+	bravo
+	delta
+	eco
 	*/
-	//'a'の数を調査
-	printf("%llu\n", _str.count('a')); //4
+
+
+	//最初から最後まで削除する。
+	sample_str.erase({ 0,strlen(sample_str.c_str()) });
+	//sample_str.erase(RANGE_DEFAULT);
+
+
+	//比較演算子 == !=
+	sample_str = "HelloWorld";
+	if (sample_str == "HelloWorld")			//true
+		printf("一致しました。\n");
 
 ## SanaeFile.h
 	//ファイル名SanaeProject.log
@@ -105,7 +130,7 @@ Sanae.h
 	//LCGsによる乱数出力
 	printf("%d\n",LCGs()%10);
 
-## SanaeMath.h
+## SanaeStatistics.h
 	//92を素因数分解
 	UINT a = 92;
 	std::vector<UINT> test;
@@ -115,7 +140,7 @@ Sanae.h
 	for(UINT i:test)
 		printf("%u",i);
 		
-## SanaeUtil.h
+## SanaeUtilc.h
 	//1~9までの整数を出力
 	printf("1~9:%u\n",random(1,9));
 	
