@@ -3,7 +3,7 @@
 ・標準ライブラリをあまり使わずできるだけ自分で考えたアルゴリズムを使うようにする。
 # 詳細
 Project:UHF  
-Version:1.0.2  
+Version:1.0.3  
 DEV:Sanae  
 
 # 構成
@@ -35,7 +35,13 @@ Sanae.h
   * stdexcept  
   * vector 
   * SanaeTypes.h
-
+- UHF/SanaeFile.h  
+  * SanaeStr.h
+  * stdexcept
+  * UHFC/SanaeFilec.h  
+    1.  stdio.h
+    2.  SanaeStrc.h
+	3.	SanaeTypes.h
 # 型/メンバ紹介
 ## SanaeStr.h
 	//Samapleで初期化

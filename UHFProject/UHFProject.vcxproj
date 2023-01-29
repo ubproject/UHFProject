@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UHF\Sanae.h" />
+    <ClInclude Include="UHF\SanaeFile.h" />
     <ClInclude Include="UHF\SanaeStatistics.h" />
     <ClInclude Include="UHF\SanaeStr.h" />
     <ClInclude Include="UHF\UHFC\SanaeC.h" />
