@@ -170,32 +170,109 @@ Sanae.h
 	SanaeMathc.h
 	SanaeUtilc.h
 	をインクルードする。
+### UHFC/SanaeTypes.h
+	以下のものを定義します。
+
+	Ulong (unsigned _int64)
+	Slong (signed   _int64)
+	Uint  (unsigned int)
+
+	//返り値として使われます。
+	RETNUM(unsigned char)
+
+	MINI  (unsigned char)
+
+	TRUE,FALSE (enum)
+
+	RANGE     (struct)
+	WRITE_INFO(struct)
+
+	//文字列操作用構造体
+	STRC      (struct)
+	//wchar_tの文字列操作用構造体
+	WSTRC     (struct)
+	//シード値自動設定用
+	LCGsT     (struct)
+	//整数を配列へ変換する
+	num_array (struct)
+	//ファイル操作用
+	FILEC     (struct)
+	//ストップウォッチ(struct)
+	StopWatch
+	//時間の定義
+	TIME      (enum)
+
+	//LCGs関数で乱数生成用
+	SM_RANDOM_A
+	SM_RANDOM_m
+	//範囲のデフォルト値(すべて選択)
+	RANGE_DEFAULT
+	//文字列書き込みのデフォルト値
+	BASICW
+	//STRC構造体初期値
+	STRC_Init_Value
+	//WSTRC構造体初期値
+	WSTRC_Init_Value
+	//FILEC構造体初期値
+	FILEC_Init_Value
+	//StopWatch構造体初期値
+	StopWatch_Init_Value
+	//シード値自動設定用
+	LCGs_INFO
+
+
 ### UHFC/SanaeStrc.h
 #### 初期化する
+	//STRC構造体を使用する際は必ず初期化してください。
 	void   STRC_init   (STRC* _data);
 #### メモリを解放する
+	//メモリを解放します。メモリリーク回避のため必ず最後にメモリを解放してください。
 	void   STRC_FREE   (STRC* _data);
 #### メモリを確保する
+	//第二引数だけメモリを確保します。
 	RETNUM STRC_ALLOC  (STRC* _data  , Ulong       _alloc_count);
 #### メモリを再確保する
 	RETNUM STRC_REALLOC(STRC* _data  , Ulong       _alloc_count);
 #### 文字列をコピーする
+	//文字列をコピーします。_CopyToは最初にメモリを解放されます。
 	RETNUM STRC_COPY   (STRC* _CopyTo, const char* _text);
 #### 文字列を追加する
 	RETNUM STRC_ADD    (STRC* _data  , const char* _text);
 #### 特定文字の個数をカウントする
 	Ulong  STRC_COUNTC (STRC* _data  , char        _cchar);
 #### 文字列を書き込む
+	/*
+	_dataに_textの文字列を書き込みます。
+	書き込むためにはあらかじめメモリを確保する必要があります。
+	WRITE_INFO構造体には
+	・start_point
+	・_range
+	があります。
+	start_pointは書き込む位置(配列番号)
+	_rangeには_textの範囲を指定可能です。
+	指定しない場合は
+	BASICWを引数に渡してください。
+	*/
 	RETNUM STRC_WRITE  (STRC* _data  , const char* _text , WRITE_INFO  _info);
 #### 文字を書き込む
+	//文字をpointへ書き込みます。
 	RETNUM STRC_WRITEC (STRC* _data  , char        _dchar, Ulong       point);
 #### 文字列と文字列をつなげる
 	RETNUM STRC_CONNECT(STRC* _CopyTo, const char* _data1, const char* _data2);
 #### 文字列を切り抜く
+	/*_CopyToへ_textから切り抜いた文字列が格納されます。
+	_rangeは切り抜く範囲を指定可能です。
+	*/
 	RETNUM STRC_SUB    (STRC* _CopyTo, const char* _text , RANGE       _range);
 #### 文字を探す
+	/*_throughは指定された回数だけ見つけても無視します。
+	見つからなかった場合は0が返り値として返されSTRC_NOTFOUND_FLAGがTRUEにされます。
+	*/
 	Ulong  STRC_FINDC  (STRC* _data  , char        _fchar, Ulong       _through);
 #### 文字列を探す
+	/*_throughは指定された回数だけ見つけても無視します。
+	見つからなかった場合は0が返り値として返されSTRC_NOTFOUND_FLAGがTRUEにされます。
+	*/
 	Ulong  STRC_FIND   (STRC* _data  , const char* _text , Ulong       _through);
 #### 文字列と文字列を入れ替える
 	RETNUM STRC_REPLACE(STRC* _data  , const char* _from , const char* _to     , Ulong _through);
