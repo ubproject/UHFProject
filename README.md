@@ -44,15 +44,15 @@ Sanae.h
 	3.	SanaeTypes.h
 
 # 型/メンバ紹介
-## C言語
-### Sanae.h
+# C言語
+## Sanae.h
 	UHFC/SanaeC.h
 	SanaeFile.h
 	SanaeStatistics.h
 	SanaeStr.h
 	をインクルードします。
 
-### SanaeStr.h
+## SanaeStr.h
 	//Samapleで初期化
 	str sample_str = "Sample";
 	printf("文字列:%s\n", sample_str.c_str());	//文字列:Sample
@@ -109,7 +109,7 @@ Sanae.h
 	if (sample_str == "HelloWorld")			//true
 		printf("一致しました。\n");
 
-### SanaeFile.h
+## SanaeFile.h
 	//ファイル名SanaeProject.log
 	file _file = "SanaeProject.log";
 	
@@ -126,7 +126,7 @@ Sanae.h
 	//出力
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
-### SanaeStatistics.h
+## SanaeStatistics.h
 	//92を素因数分解
 	UINT a = 92;
 	std::vector<UINT> test;
@@ -136,8 +136,8 @@ Sanae.h
 	for(UINT i:test)
 		printf("%u",i);
 
-## C言語
-### UHFC/SanaeC.h
+# C言語
+## UHFC/SanaeC.h
 	SanaeStrc.h
 	SanaeWchar.h
 	SanaeFilec.h
@@ -145,7 +145,7 @@ Sanae.h
 	SanaeUtilc.h
 	をインクルードする。
 
-### UHFC/SanaeTypes.h
+## UHFC/SanaeTypes.h
 	以下のものを定義します。
 
 	Ulong (unsigned _int64)
@@ -196,26 +196,26 @@ Sanae.h
 	LCGs_INFO
 
 
-### UHFC/SanaeStrc.h
-#### 初期化する
+## UHFC/SanaeStrc.h
+### 初期化する
 	//STRC構造体を使用する際は必ず初期化してください。
 	void   STRC_init   (STRC* _data);
-#### メモリを解放する
+### メモリを解放する
 	//メモリを解放します。メモリリーク回避のため必ず最後にメモリを解放してください。
 	void   STRC_FREE   (STRC* _data);
-#### メモリを確保する
+### メモリを確保する
 	//第二引数だけメモリを確保します。
 	RETNUM STRC_ALLOC  (STRC* _data  , Ulong       _alloc_count);
-#### メモリを再確保する
+### メモリを再確保する
 	RETNUM STRC_REALLOC(STRC* _data  , Ulong       _alloc_count);
-#### 文字列をコピーする
+### 文字列をコピーする
 	//文字列をコピーします。_CopyToは最初にメモリを解放されます。
 	RETNUM STRC_COPY   (STRC* _CopyTo, const char* _text);
-#### 文字列を追加する
+### 文字列を追加する
 	RETNUM STRC_ADD    (STRC* _data  , const char* _text);
-#### 特定文字の個数をカウントする
+### 特定文字の個数をカウントする
 	Ulong  STRC_COUNTC (STRC* _data  , char        _cchar);
-#### 文字列を書き込む
+### 文字列を書き込む
 	/*
 	_dataに_textの文字列を書き込みます。
 	書き込むためにはあらかじめメモリを確保する必要があります。
@@ -229,75 +229,75 @@ Sanae.h
 	BASICWを引数に渡してください。
 	*/
 	RETNUM STRC_WRITE  (STRC* _data  , const char* _text , WRITE_INFO  _info);
-#### 文字を書き込む
+### 文字を書き込む
 	//文字をpointへ書き込みます。
 	RETNUM STRC_WRITEC (STRC* _data  , char        _dchar, Ulong       point);
-#### 文字列と文字列をつなげる
+### 文字列と文字列をつなげる
 	RETNUM STRC_CONNECT(STRC* _CopyTo, const char* _data1, const char* _data2);
-#### 文字列を切り抜く
+### 文字列を切り抜く
 	/*_CopyToへ_textから切り抜いた文字列が格納されます。
 	_rangeは切り抜く範囲を指定可能です。
 	*/
 	RETNUM STRC_SUB    (STRC* _CopyTo, const char* _text , RANGE       _range);
-#### 文字を探す
+### 文字を探す
 	/*_throughは指定された回数だけ見つけても無視します。
 	見つからなかった場合は0が返り値として返されSTRC_NOTFOUND_FLAGがTRUEにされます。
 	*/
 	Ulong  STRC_FINDC  (STRC* _data  , char        _fchar, Ulong       _through);
-#### 文字列を探す
+### 文字列を探す
 	/*_throughは指定された回数だけ見つけても無視します。
 	見つからなかった場合は0が返り値として返されSTRC_NOTFOUND_FLAGがTRUEにされます。
 	*/
 	Ulong  STRC_FIND   (STRC* _data  , const char* _text , Ulong       _through);
-#### 文字列と文字列を入れ替える
+### 文字列と文字列を入れ替える
 	RETNUM STRC_REPLACE(STRC* _data  , const char* _from , const char* _to     , Ulong _through);
-#### 文字が小文字か大文字かどうか調べる
+### 文字が小文字か大文字かどうか調べる
 	RETNUM IS_UPPERCASE(char  _data);
 	RETNUM IS_LOWERCASE(char  _data);
-#### 文字列を指定した範囲だけ大文字/小文字に変換する
+### 文字列を指定した範囲だけ大文字/小文字に変換する
 	void   STRC_TO_UPPERCASE(STRC* _data, RANGE _range);
 	void   STRC_TO_LOWERCASE(STRC* _data, RANGE _range);
 
-### SanaeWchar.h
-#### 初期化します
+## SanaeWchar.h
+### 初期化します
 	void   WSTRC_init   (WSTRC* _data);
-#### メモリを解放します
+### メモリを解放します
 	void   WSTRC_FREE   (WSTRC* _data);
-#### メモリを確保します
+### メモリを確保します
 	RETNUM WSTRC_ALLOC  (WSTRC* _data  , Ulong          _alloc_count);
-#### 文字列を書き込みます
+### 文字列を書き込みます
 	RETNUM WSTRC_WRITE  (WSTRC* _data  , const wchar_t* _text       , WRITE_INFO     _info);
-#### 文字列と文字列をつなげます
+### 文字列と文字列をつなげます
 	RETNUM WSTRC_CONNECT(WSTRC* _CopyTo, const wchar_t* _data1      , const wchar_t* _data2);
-#### 文字列をコピーします
+### 文字列をコピーします
 	RETNUM WSTRC_COPY   (WSTRC* _CopyTo, const wchar_t* _text);
-#### 文字列を追加します
+### 文字列を追加します
 	RETNUM WSTRC_ADD    (WSTRC* _data  , const wchar_t* _text);
-#### STRC構造体へ変換します
+### STRC構造体へ変換します
 	RETNUM TO_STRC      (STRC*  _data  , const wchar_t* _text);
-#### STRC構造体をWSTRC構造体へ変換します
+### STRC構造体をWSTRC構造体へ変換します
 	RETNUM TO_WSTRC     (WSTRC* _wstr  , const char*    _text);
 
-### SanaeMathc.h
-#### 2の5乗を計算
+## SanaeMathc.h
+### 2の5乗を計算
 	printf("%llu\n",exponentiation((UINT)2, 5));  //32
-#### 11は素数か判定
+### 11は素数か判定
 	printf("%d\n",is_primenum(11));             //true(1)	
-#### 2^1/2を計算(下三桁)
+### 2^1/2を計算(下三桁)
 	printf("2^1/2=%lf\n",root(2,2,3));          //2^1/2=1.414
-#### 2^1/2を計算(下六桁)
+### 2^1/2を計算(下六桁)
 	printf("2^1/2=%lf\n",root(2,2,6));          //2^1/2=1.414213
-#### 2^1/5を計算(下三桁)
+### 2^1/5を計算(下三桁)
 	printf("2^1/5=%lf\n",root(2,5,3));          //2^1/5=1.148
-#### シード値を設定
+### シード値を設定
 	SLCGs((Ulong)time(NULL),100);
-#### LCGsによる乱数出力
+### LCGsによる乱数出力
 	printf("%d\n"  ,LCGs()%10);
-#### フィボナッチ数列の引数番目の値を求めます。
+### フィボナッチ数列の引数番目の値を求めます。
 	printf("%llu\n"  ,fibonacci(9))				//34
-#### 桁数の取得
+### 桁数の取得
 	printf("%llu\n",get_digit(999));			//3
-#### 数値を配列へ変換
+### 数値を配列へ変換
 	num_array _data = {NULL,0};
 	to_array(&_data,123);
 
@@ -307,34 +307,34 @@ Sanae.h
 
 	MATH_FREE(&_data);
 
-### SanaeUtilc.h
-#### 現在の秒数を取得
+## SanaeUtilc.h
+### 現在の秒数を取得
 	time_t get_second (time_t);
-#### 現在の分数を取得
+### 現在の分数を取得
 	time_t get_minutes(time_t);
-#### 現在の時間を取得
+### 現在の時間を取得
 	time_t get_hour   (time_t);
-#### 現在の日数を取得
+### 現在の日数を取得
 	time_t get_day    (time_t);
-#### 現在の年数を取得
+### 現在の年数を取得
 	time_t get_year   (time_t);
-#### ストップウォッチをスタートします
+### ストップウォッチをスタートします
 	void   StopWatch_Start       (StopWatch*);
-#### ストップウォッチをストップします
+### ストップウォッチをストップします
 	time_t StopWatch_Finish      (StopWatch*);
-#### 経過時間を取得します
+### 経過時間を取得します
 	time_t StopWatch_elapsed_time(StopWatch*);
 
-### SanaeFilec.h
-#### メモリを解放します
+## SanaeFilec.h
+### メモリを解放します
 	void   FILEC_FINISH     (FILEC*      _data);
-#### ファイルを作成します
+### ファイルを作成します
 	void   FILEC_MAKE       (const char* _filename);
-#### ファイルが存在するかどうかを判定します
+### ファイルが存在するかどうかを判定します
 	RETNUM FILEC_IS_EXISTING(const char* _filename);
-#### ファイルを読み込みます
+### ファイルを読み込みます
 	RETNUM FILEC_START      (FILEC*      _data    , const char* _filename);
-#### ファイルの内容を読み取ります
+### ファイルの内容を読み取ります
 	RETNUM FILEC_READ       (FILEC*      _data    , STRC*       _CopyTo);
-#### ファイルへ文字列を書き込みます
+### ファイルへ文字列を書き込みます
 	RETNUM FILEC_WRITE      (FILEC*      _data    , const char* _text    , const char* _mode);
