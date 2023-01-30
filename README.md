@@ -44,7 +44,7 @@ Sanae.h
 	3.	SanaeTypes.h
 
 # 型/メンバ紹介
-# C言語
+# C++言語
 ## Sanae.h
 	UHFC/SanaeC.h
 	SanaeFile.h
