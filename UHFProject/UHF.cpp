@@ -72,7 +72,7 @@ void SanaeStr() {
 }
 
 int main() {
-	SanaeStr();
-
+	//SanaeStr();
+	printf("%llu\n", fibonacci(9));
 	return 0;
 }

@@ -126,25 +126,6 @@ Sanae.h
 	//出力
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
-### SanaeMathc.h
-	//2の5乗を計算
-	printf("%llu\n",exponentiation((UINT)2, 5));  //32
-	
-	//11は素数か判定
-	printf("%d\n",is_primenum(11));             //true(1)
-	
-	//2^1/2を計算(下三桁)
-	printf("2^1/2=%lf\n",root(2,2,3));          //2^1/2=1.414
-	
-	//2^1/2を計算(下六桁)
-	printf("2^1/2=%lf\n",root(2,2,6));          //2^1/2=1.414213
-	
-	//2^1/5を計算(下三桁)
-	printf("2^1/5=%lf\n",root(2,5,3));          //2^1/5=1.148
-	
-	//LCGsによる乱数出力
-	printf("%d\n",LCGs()%10);
-
 ### SanaeStatistics.h
 	//92を素因数分解
 	UINT a = 92;
@@ -154,13 +135,6 @@ Sanae.h
 	
 	for(UINT i:test)
 		printf("%u",i);
-		
-### SanaeUtilc.h
-	//1~9までの整数を出力
-	printf("1~9:%u\n",random(1,9));
-	
-	//year:2022  day:286  23:21:29
-	printf("year:%u  day:%u  %u:%u:%u\n",get_year(),get_day(),get_hour(),get_minutes(),get_second());
 
 ## C言語
 ### UHFC/SanaeC.h
@@ -170,6 +144,7 @@ Sanae.h
 	SanaeMathc.h
 	SanaeUtilc.h
 	をインクルードする。
+
 ### UHFC/SanaeTypes.h
 	以下のものを定義します。
 
@@ -282,3 +257,84 @@ Sanae.h
 #### 文字列を指定した範囲だけ大文字/小文字に変換する
 	void   STRC_TO_UPPERCASE(STRC* _data, RANGE _range);
 	void   STRC_TO_LOWERCASE(STRC* _data, RANGE _range);
+
+### SanaeWchar.h
+#### 初期化します
+	void   WSTRC_init   (WSTRC* _data);
+#### メモリを解放します
+	void   WSTRC_FREE   (WSTRC* _data);
+#### メモリを確保します
+	RETNUM WSTRC_ALLOC  (WSTRC* _data  , Ulong          _alloc_count);
+#### 文字列を書き込みます
+	RETNUM WSTRC_WRITE  (WSTRC* _data  , const wchar_t* _text       , WRITE_INFO     _info);
+#### 文字列と文字列をつなげます
+	RETNUM WSTRC_CONNECT(WSTRC* _CopyTo, const wchar_t* _data1      , const wchar_t* _data2);
+#### 文字列をコピーします
+	RETNUM WSTRC_COPY   (WSTRC* _CopyTo, const wchar_t* _text);
+#### 文字列を追加します
+	RETNUM WSTRC_ADD    (WSTRC* _data  , const wchar_t* _text);
+#### STRC構造体へ変換します
+	RETNUM TO_STRC      (STRC*  _data  , const wchar_t* _text);
+#### STRC構造体をWSTRC構造体へ変換します
+	RETNUM TO_WSTRC     (WSTRC* _wstr  , const char*    _text);
+
+### SanaeMathc.h
+#### 2の5乗を計算
+	printf("%llu\n",exponentiation((UINT)2, 5));  //32
+#### 11は素数か判定
+	printf("%d\n",is_primenum(11));             //true(1)	
+#### 2^1/2を計算(下三桁)
+	printf("2^1/2=%lf\n",root(2,2,3));          //2^1/2=1.414
+#### 2^1/2を計算(下六桁)
+	printf("2^1/2=%lf\n",root(2,2,6));          //2^1/2=1.414213
+#### 2^1/5を計算(下三桁)
+	printf("2^1/5=%lf\n",root(2,5,3));          //2^1/5=1.148
+#### シード値を設定
+	SLCGs((Ulong)time(NULL),100);
+#### LCGsによる乱数出力
+	printf("%d\n"  ,LCGs()%10);
+#### フィボナッチ数列の引数番目の値を求めます。
+	printf("%llu\n"  ,fibonacci(9))				//34
+#### 桁数の取得
+	printf("%llu\n",get_digit(999));			//3
+#### 数値を配列へ変換
+	num_array _data = {NULL,0};
+	to_array(&_data,123);
+
+	printf("%u\n",(Uint)_data._data[0]);		//3
+	printf("%u\n",(Uint)_data._data[1]);		//2
+	printf("%u\n",(Uint)_data._data[2]);		//1
+
+	MATH_FREE(&_data);
+
+### SanaeUtilc.h
+#### 現在の秒数を取得
+	time_t get_second (time_t);
+#### 現在の分数を取得
+	time_t get_minutes(time_t);
+#### 現在の時間を取得
+	time_t get_hour   (time_t);
+#### 現在の日数を取得
+	time_t get_day    (time_t);
+#### 現在の年数を取得
+	time_t get_year   (time_t);
+#### ストップウォッチをスタートします
+	void   StopWatch_Start       (StopWatch*);
+#### ストップウォッチをストップします
+	time_t StopWatch_Finish      (StopWatch*);
+#### 経過時間を取得します
+	time_t StopWatch_elapsed_time(StopWatch*);
+
+### SanaeFilec.h
+#### メモリを解放します
+	void   FILEC_FINISH     (FILEC*      _data);
+#### ファイルを作成します
+	void   FILEC_MAKE       (const char* _filename);
+#### ファイルが存在するかどうかを判定します
+	RETNUM FILEC_IS_EXISTING(const char* _filename);
+#### ファイルを読み込みます
+	RETNUM FILEC_START      (FILEC*      _data    , const char* _filename);
+#### ファイルの内容を読み取ります
+	RETNUM FILEC_READ       (FILEC*      _data    , STRC*       _CopyTo);
+#### ファイルへ文字列を書き込みます
+	RETNUM FILEC_WRITE      (FILEC*      _data    , const char* _text    , const char* _mode);
