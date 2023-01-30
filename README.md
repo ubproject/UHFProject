@@ -164,3 +164,44 @@ Sanae.h
 
 ## C言語
 ### UHFC/SanaeC.h
+	SanaeStrc.h
+	SanaeWchar.h
+	SanaeFilec.h
+	SanaeMathc.h
+	SanaeUtilc.h
+	をインクルードする。
+### UHFC/SanaeStrc.h
+#### 初期化する
+	void   STRC_init   (STRC* _data);
+#### メモリを解放する
+	void   STRC_FREE   (STRC* _data);
+#### メモリを確保する
+	RETNUM STRC_ALLOC  (STRC* _data  , Ulong       _alloc_count);
+#### メモリを再確保する
+	RETNUM STRC_REALLOC(STRC* _data  , Ulong       _alloc_count);
+#### 文字列をコピーする
+	RETNUM STRC_COPY   (STRC* _CopyTo, const char* _text);
+#### 文字列を追加する
+	RETNUM STRC_ADD    (STRC* _data  , const char* _text);
+#### 特定文字の個数をカウントする
+	Ulong  STRC_COUNTC (STRC* _data  , char        _cchar);
+#### 文字列を書き込む
+	RETNUM STRC_WRITE  (STRC* _data  , const char* _text , WRITE_INFO  _info);
+#### 文字を書き込む
+	RETNUM STRC_WRITEC (STRC* _data  , char        _dchar, Ulong       point);
+#### 文字列と文字列をつなげる
+	RETNUM STRC_CONNECT(STRC* _CopyTo, const char* _data1, const char* _data2);
+#### 文字列を切り抜く
+	RETNUM STRC_SUB    (STRC* _CopyTo, const char* _text , RANGE       _range);
+#### 文字を探す
+	Ulong  STRC_FINDC  (STRC* _data  , char        _fchar, Ulong       _through);
+#### 文字列を探す
+	Ulong  STRC_FIND   (STRC* _data  , const char* _text , Ulong       _through);
+#### 文字列と文字列を入れ替える
+	RETNUM STRC_REPLACE(STRC* _data  , const char* _from , const char* _to     , Ulong _through);
+#### 文字が小文字か大文字かどうか調べる
+	RETNUM IS_UPPERCASE(char  _data);
+	RETNUM IS_LOWERCASE(char  _data);
+#### 文字列を指定した範囲だけ大文字/小文字に変換する
+	void   STRC_TO_UPPERCASE(STRC* _data, RANGE _range);
+	void   STRC_TO_LOWERCASE(STRC* _data, RANGE _range);
