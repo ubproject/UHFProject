@@ -42,8 +42,17 @@ Sanae.h
     1.  stdio.h
     2.  SanaeStrc.h
 	3.	SanaeTypes.h
+
 # 型/メンバ紹介
-## SanaeStr.h
+## C言語
+### Sanae.h
+	UHFC/SanaeC.h
+	SanaeFile.h
+	SanaeStatistics.h
+	SanaeStr.h
+	をインクルードします。
+
+### SanaeStr.h
 	//Samapleで初期化
 	str sample_str = "Sample";
 	printf("文字列:%s\n", sample_str.c_str());	//文字列:Sample
@@ -100,7 +109,7 @@ Sanae.h
 	if (sample_str == "HelloWorld")			//true
 		printf("一致しました。\n");
 
-## SanaeFile.h
+### SanaeFile.h
 	//ファイル名SanaeProject.log
 	file _file = "SanaeProject.log";
 	
@@ -117,7 +126,7 @@ Sanae.h
 	//出力
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
-## SanaeMathc.h
+### SanaeMathc.h
 	//2の5乗を計算
 	printf("%llu\n",exponentiation((UINT)2, 5));  //32
 	
@@ -136,7 +145,7 @@ Sanae.h
 	//LCGsによる乱数出力
 	printf("%d\n",LCGs()%10);
 
-## SanaeStatistics.h
+### SanaeStatistics.h
 	//92を素因数分解
 	UINT a = 92;
 	std::vector<UINT> test;
@@ -146,9 +155,12 @@ Sanae.h
 	for(UINT i:test)
 		printf("%u",i);
 		
-## SanaeUtilc.h
+### SanaeUtilc.h
 	//1~9までの整数を出力
 	printf("1~9:%u\n",random(1,9));
 	
 	//year:2022  day:286  23:21:29
 	printf("year:%u  day:%u  %u:%u:%u\n",get_year(),get_day(),get_hour(),get_minutes(),get_second());
+
+## C言語
+### UHFC/SanaeC.h
