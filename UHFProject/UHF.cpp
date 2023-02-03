@@ -31,7 +31,6 @@ void SanaeStr() {
 	sample_str += "です。12";
 	//sample_str.add("です。12");
 
-
 	//数値に変換(最初から最後まで)
 	Ulong i = sample_str.to_ulong(RANGE_DEFAULT);
 	printf("数値は:%llu\n", i);					//123412
@@ -70,8 +69,38 @@ void SanaeStr() {
 
 	return;
 }
+void SanaeStrc() {
+	STRC sample = STRC_Init_Value;
 
+	//文字列の確保&文字列の書き込み
+	{
+		if (FALSE == STRC_ALLOC(&sample, 6)) {
+			printf("メモリの確保に失敗しました。\n");
+			return;
+		}
+		STRC_WRITE(&sample, "hello", BASICW);
+	}
+	/*STRC_COPY(&sample, "hello");*/
+
+	//文字列の追加
+	STRC_ADD(&sample,"world");
+
+	//文字列切り抜き
+	RANGE buf = {0,4};
+	STRC_SUB(&sample,sample._str,buf);
+	//sample._str=hello
+
+	//文字列入れ替え
+	STRC_COPY(&sample,"Hello World");//sample=Hello World
+	STRC_REPLACE(&sample,"World","Sanae",0);//sample=Hello Sanae
+
+	//メモリの開放
+	STRC_FREE(&sample);
+
+	return;
+}
 int main() {
+	SanaeStrc();
 	SanaeStr();
 	return 0;
 }
