@@ -7,8 +7,6 @@
 #include <iostream>
 #include "UHF/Sanae.h"
 
-using namespace std;
-
 
 void SanaeStr() {
 	/*SanaeStr.hサンプルプログラム*/
