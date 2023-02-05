@@ -98,6 +98,7 @@ void SanaeStrc() {
 	return;
 }
 int main() {
+	
 	SanaeStrc();
 	SanaeStr();
 	return 0;
