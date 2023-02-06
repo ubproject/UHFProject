@@ -12,7 +12,11 @@
 
 
 /*マクロ*/
-#define is_int(A) ((A - (Ulong)A)==0)
+#define   ABS_SANAE    (A)   ((A<0)?(-1*A): A)
+#define ERROR_SANAE    (A)   (1.0e-6)
+
+#define IS_INT         (A)   ((A - (Ulong)A)==0)
+#define IS_EQUAL_DOUBLE(A,B) (ABS_SANAE(A-B) <= ERROR_SANAE)
 
 
 /*INCLUDE*/
@@ -81,28 +85,25 @@ double exponentiation(double _data,Slong _count){
 log low_num低の_dataを求めます。
 accuracyを精度として設定します。
 
-第三引数へ0を入れられた場合30に設定されます。
+第三引数へ0を入れられた場合40に設定されます。
 */
 double log_s(double _data, double low_num, Ulong accuracy) {
 	double _retdata  = 0;
-	double _data_buf = 0;
 	Slong  minus_buf = 0;
 
 	for (; _data >= low_num; _data /= low_num, _retdata += 1);
-	_data_buf = _data;
 
 	if (_data == 1)
 		return _retdata;
 
 	if (accuracy == 0)
-		accuracy = 30;
+		accuracy = 40;
 
 	for (Ulong i = 0; i <= accuracy; i++) {
 		if (_data >= low_num)
 		{
 			_retdata += exponentiation(2, minus_buf);
 			_data    /= low_num;
-			_data_buf = _data;
 		}
 		else
 		{
