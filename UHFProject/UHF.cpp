@@ -98,8 +98,17 @@ void SanaeStrc() {
 	return;
 }
 int main() {
+	matrix a = { 2,1 };
+
+	matrix b = { 1,2};
 	
-	SanaeStrc();
-	SanaeStr();
+	a[{0, 0}] = 1;
+	a[{1, 0}] = 2;
+	b[{0, 0}] = 3;
+	b[{0, 1}] = 4;
+
+	b.mul(a).view_matrix();
+	//SanaeStrc();
+	//SanaeStr();
 	return 0;
 }
