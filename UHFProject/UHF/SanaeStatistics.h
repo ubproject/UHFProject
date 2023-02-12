@@ -34,7 +34,7 @@ struct S_PAIR {
 
 //行列の計算を行う。
 //失敗した場合0を返します。
-Ulong Get_ArrayNumber(Ulong _width, S_PAIR<Ulong, Ulong> _XYNum) {
+inline Ulong Get_ArrayNumber(Ulong _width, S_PAIR<Ulong, Ulong> _XYNum) {
 	Ulong& _x = _XYNum.front;
 	Ulong& _y = _XYNum.back;
 
@@ -43,8 +43,9 @@ Ulong Get_ArrayNumber(Ulong _width, S_PAIR<Ulong, Ulong> _XYNum) {
 
 	return (_width * (_y)) + (_x);
 }
+
 //失敗した場合0を返します。
-S_PAIR<Ulong,Ulong> Get_XYNumber(Ulong _width,Ulong _ArrayNum) {
+inline S_PAIR<Ulong,Ulong> Get_XYNumber(Ulong _width,Ulong _ArrayNum) {
 	Ulong _x = _ArrayNum % _width;
 	Ulong _y = (_ArrayNum - _x) / _width;
 
@@ -54,6 +55,7 @@ S_PAIR<Ulong,Ulong> Get_XYNumber(Ulong _width,Ulong _ArrayNum) {
 	return { _x , _y };
 }
 
+//試用段階
 template<typename _DataType = double>
 class matrix {
 private:
@@ -72,8 +74,8 @@ private:
 			*(_main + i) = _data;
 	}
 
-	bool _allocate(_DataType** _data,Ulong _size) {
-		_DataType* buf = (_DataType*)realloc(*_data,_size*sizeof(_DataType));
+	bool _allocate(_DataType** _data,Ulong size) {
+		_DataType* buf = (_DataType*)realloc(*_data,size*sizeof(_DataType));
 		
 		if (buf == NULL) {
 			free(*_data);
@@ -84,9 +86,56 @@ private:
 
 		*_data = buf;
 
-		memset(*_data,0,_size*sizeof(_DataType));
+		memset(*_data,0,size*sizeof(_DataType));
 
 		return true;
+	}
+
+	bool to_identity_matrix(S_PAIR<Ulong,Ulong> size,_DataType** _data) {
+		if (size.back != size.front)
+			return false;
+
+		memset(*_data,0,size.front*size.back*sizeof(_DataType));
+
+		for (Ulong i = 0; i < size.front; i++)
+			(*_data)[Get_ArrayNumber(size.front, {i,i})] = 1;
+
+		return true;
+	}
+
+	void copy(_DataType** _from,_DataType** _to,S_PAIR<Ulong,Ulong> size) {
+		free(*_to);
+		*_to = NULL;
+
+		if (!_allocate(_to, (size.front * size.back)))
+			_error("Failed to allocate.");
+
+		for (Ulong i = 0; i < (size.back * size.front);i++)
+			(*_to)[i] = (*_from)[i];
+	}
+
+	void view(_DataType** _data,S_PAIR<Ulong,Ulong> size) {
+		for (Ulong i = 0; i < ((size.front) * (size.back)); i++) {
+			if (i % size.front == 0)
+				printf("\n");
+			printf("%.0lg ",(*_data)[i]);
+		}
+	}
+
+	void _trans(S_PAIR<Ulong,Ulong> size,_DataType** _data,Ulong _pos,_DataType** _to) {
+		for (Ulong y = 0; y < size.back;y++) {
+			if (_pos != y) {
+				_DataType div = 0;
+				//ax+b=0 x -= b/a  
+				div = ((* _data)[Get_ArrayNumber(size.front, {_pos,y})] / (* _data)[Get_ArrayNumber(size.front, {_pos,_pos})]);
+
+				//その他列への適用
+				for (Ulong x = 0; x < size.front; x++) {
+					(*_data)[Get_ArrayNumber(size.front , { x,y })] -= div * (( * _data)[Get_ArrayNumber(size.front, {x,_pos})]);
+					(*_to)  [Get_ArrayNumber(size.front , { x,y })] -= div * (( * _to)  [Get_ArrayNumber(size.front, {x,_pos})]);
+				}
+			}
+		}
 	}
 public:
 	//Constructor
@@ -97,6 +146,12 @@ public:
 		if (!_allocate(&_main, width*height))
 			_error("Failed to allocate.");
 	}
+
+	matrix(matrix& _data) {
+		copy(&_data._main,&_main,_data._size);
+		_size = _data._size;
+	}
+
 	//Destructor
 	~matrix() {
 		free(_main);
@@ -110,10 +165,22 @@ public:
 
 		return *(_main + _buf);
 	}
+	matrix& operator =(matrix& _data) {
+		copy(&_data._main, &_main, _data._size);
+
+		return *this;
+	}
+	matrix& operator *=(const matrix& _data) {
+		return mul(_data);
+	}
+	matrix& operator *(const matrix& _data) {
+		return mul(_data);
+	}
+
 
 	matrix& add(const matrix<_DataType>& _data) {
 		if (_data._height != _height || _data._width != _width)
-			_error("different size.");
+			_error("different size:add");
 
 		for (Ulong i = 0; i < _width * _height; i++)
 			*(_main + i) += *(_data._main + i);
@@ -122,7 +189,7 @@ public:
 	}
 	matrix& sub(const matrix<_DataType>& _data) {
 		if (_data._height != _height || _data._width != _width)
-			_error("different size.");
+			_error("different siz:sub");
 
 		for (Ulong i = 0; i < _width * _height; i++)
 			*(_main + i) -= *(_data._main + i);
@@ -136,17 +203,16 @@ public:
 
 		return *this;
 	}
-
+	
 	//cij= Σ k=1,m (aik*bkj)を使用
 	matrix& mul(const matrix<_DataType>& _data) {
-		if (_width != _data._height) {
-			_error("different size.");
-		}
+		if (_width != _data._height)
+			_error("different size:mul");
 
 		_DataType* _buf = NULL;
 		if (!this->_allocate(&_buf, (_height * _data._width))) {
 			free(_main);
-			_error("Failed to allocate.");
+			_error("Failed to allocate:mul");
 		}
 
 		for (Ulong y = 0; y < _height; y++) {
@@ -165,15 +231,45 @@ public:
 		return *this;
 	}
 
-	matrix& view_matrix() {
-		for (Ulong i = 0; i < ((_width) * (_height));i++) {
-			if (i % _width == 0)
-				printf("\n");
-			printf("%lg ",*(_main+i));
+	matrix& A_matrix() {
+		if (_width != _height)
+			_error("different size:a_matrix");
+		
+		//返却する値
+		_DataType* _buf = NULL;
+		if (!_allocate(&_buf, _width * _height))
+			_error("Failed to allocate:a_matrix");
+		
+		//単位行列にする。
+		to_identity_matrix({_width,_height},&_buf);
+		
+		for (Ulong x = 0; x < _width; x++)
+			_trans(_size, &_main, x, &_buf);
+
+		for (Ulong _pos = 0; _pos < _width; _pos++) {
+			for (Ulong _x = 0; _x < _width; _x++) {
+				_DataType _is_zero_buf = _main[Get_ArrayNumber(_width, { _pos,_pos })];
+				if(_is_zero_buf!=0)
+					_buf[Get_ArrayNumber(_width, { _x,_pos })] /= _is_zero_buf;
+			}
 		}
+
+		free(_main);
+		_main = _buf;
+
 		return *this;
 	}
 
+	matrix& to_identity() {
+		to_identity_matrix({_width,_height},&_main);
+
+		return *this;
+	}
+
+	matrix& view_matrix() {
+		view(&_main,_size);
+		return *this;
+	}
 };
 
 //素因数分解を行います。
