@@ -102,40 +102,20 @@ int main() {
 	SanaeStrc();
 	SanaeStr();
 	
-	//行列の計算
-	matrix test = {5,5};
-	test[{0, 0}] = 2;
-	test[{1, 0}] = 1;
-	test[{2, 0}] = 5;
-	test[{3, 0}] = 3;
-	test[{4, 0}] = 2;
+	matrix test = {2,3};
+
+	test[{0, 0}] = 1;
+	test[{1, 0}] = 2;
 
 	test[{0, 1}] = 3;
-	test[{1, 1}] = 0;
-	test[{2, 1}] = 1;
-	test[{3, 1}] = 6;
-	test[{4, 1}] = 3;
+	test[{1, 1}] = 4;
 
-	test[{0, 2}] = 1;
-	test[{1, 2}] = 4;
-	test[{2, 2}] = 3;
-	test[{3, 2}] = 3;
-	test[{4, 2}] = 9;
+	test[{0, 2}] = 5;
+	test[{1, 2}] = 6;
 
-	test[{0, 3}] = 8;
-	test[{1, 3}] = 2;
-	test[{2, 3}] = 0;
-	test[{3, 3}] = 1;
-	test[{4, 3}] = 8;
+	test.view_matrix();
 
-	test[{0, 4}] = 1;
-	test[{1, 4}] = 2;
-	test[{2, 4}] = 3;
-	test[{3, 4}] = 4;
-	test[{4, 4}] = 5;
-	
-	printf("大本の行列\n");
-	test.view_matrix("%d");
-	printf("答え:%lf",test.det());
+	test.transpose();
+	test.view_matrix();
 	return 0;
 }

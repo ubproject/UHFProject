@@ -424,6 +424,7 @@ public:
 
 		return _t;
 	}
+
 	//正則行列かどうか調べます。
 	bool is_holomorphic_matrix() {
 		if (this->det() == 0)
@@ -455,6 +456,30 @@ public:
 		
 		for (Ulong _pos = 0; _pos < (_width * _height); _pos++)
 			(*_to)[_pos] = _main[_pos];
+
+		return *this;
+	}
+
+	//転置を行います。
+	matrix& transpose() {
+		//行列のコピー
+		_DataType* _copy = NULL;
+		this->copy(&_main, &_copy, _size);
+
+		free(_main);
+		_main = NULL;
+
+		this->_allocate(&_main,_size.front*_size.back);
+
+		for (Ulong x = 0; x < _size.front;x++) {
+			for (Ulong y = 0; y < _size.back; y++) {
+				_main[Get_ArrayNumber(_size.back, { y,x })] = _copy[Get_ArrayNumber(_size.front, { x,y })];
+			}
+		}
+
+		free(_copy);
+
+		_size = {_size.back,_size.front};
 
 		return *this;
 	}
