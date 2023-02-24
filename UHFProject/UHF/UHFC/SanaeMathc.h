@@ -73,6 +73,9 @@ RETNUM IS_PRIMENUM(Ulong _data){
 
 /*べき乗*/
 double exponentiation(double _data,Slong _count){
+	if (_count == 0)
+		return 1;
+
 	double _buf = _data;
 
 	for(Uint i = 1; i < (_count < 0 ? -1*_count : _count); i++)

@@ -4,7 +4,6 @@
  Author      : Sanae
  Version     : 1.0.3(Beta)
  Copyright   : CopyRight 2022 SanaeProject.
- Description : Master include file.
  ============================================================================
  */
 
@@ -33,50 +32,50 @@ struct S_PAIR {
 
 
 //行列の計算を行う。
-//失敗した場合0を返します。
-inline Ulong Get_ArrayNumber(Ulong _width, S_PAIR<Ulong, Ulong> _XYNum) {
-	Ulong& _x = _XYNum.front;
-	Ulong& _y = _XYNum.back;
-
-	if (_x >= _width)
-		return 0;
-
-	return (_width * (_y)) + (_x);
-}
-
-//失敗した場合0を返します。
-inline S_PAIR<Ulong,Ulong> Get_XYNumber(Ulong _width,Ulong _ArrayNum) {
-	Ulong _x = _ArrayNum % _width;
-	Ulong _y = (_ArrayNum - _x) / _width;
-
-	if (_x >= _width)
-		return {0,0};
-
-	return { _x , _y };
-}
-
 //試用段階
 template<typename _DataType = double>
 class matrix {
 private:
 	_DataType* _main = NULL;
 
-	S_PAIR<Ulong,Ulong> _size  = {0,0};
-	Ulong&              _width = _size.front;
-	Ulong&              _height= _size.back;
+	S_PAIR<Ulong, Ulong> _size = { 0,0 };
 
+	//列
+	Ulong& _width  = _size.front;
+	//行
+	Ulong& _height = _size.back;
+
+	//error出力用
 	void _error(const char* _text) {
 		throw std::exception(_text);
 	}
 
-	void _set_val(S_PAIR<Ulong,Ulong> _from,S_PAIR<Ulong,Ulong> _to,_DataType _data) {
-		for (Ulong i = Get_ArrayNumber(_width, _from);i<=Get_ArrayNumber(_width,_to);i++)
-			*(_main + i) = _data;
+	//配列番号を取得します。第一引数に列数を第二引数に{列数,行数}を入れてください。
+	Ulong Get_ArrayNumber(Ulong width, S_PAIR<Ulong, Ulong> _XYNum) {
+		Ulong& _x = _XYNum.front;
+		Ulong& _y = _XYNum.back;
+
+		if (_x >= width)
+			return 0;
+
+		return (width * (_y)) + (_x);
 	}
 
-	bool _allocate(_DataType** _data,Ulong size) {
-		_DataType* buf = (_DataType*)realloc(*_data,size*sizeof(_DataType));
-		
+	//配列番号を{列数,行列}に変換します。 第一引数に列数を第二引数に配列番号を入れてください。
+	S_PAIR<Ulong, Ulong> Get_XYNumber(Ulong width, Ulong _ArrayNum) {
+		Ulong _x = _ArrayNum % width;
+		Ulong _y = (_ArrayNum - _x) / width;
+
+		if (_x >= width)
+			return { 0,0 };
+
+		return { _x , _y };
+	}
+
+	//配列を確保します。返り値として成功:true,失敗:falseを返します。
+	bool _allocate(_DataType** _data, Ulong size) {
+		_DataType* buf = (_DataType*)realloc(*_data, size * sizeof(_DataType));
+
 		if (buf == NULL) {
 			free(*_data);
 			*_data = NULL;
@@ -86,69 +85,209 @@ private:
 
 		*_data = buf;
 
-		memset(*_data,0,size*sizeof(_DataType));
+		//データの初期化
+		memset(*_data, 0, size * sizeof(_DataType));
 
 		return true;
 	}
 
-	bool to_identity_matrix(S_PAIR<Ulong,Ulong> size,_DataType** _data) {
+	//第一引数の配列のポインタ先を単位行列にセットします。
+	bool to_identity_matrix(_DataType** _data, S_PAIR<Ulong, Ulong> size) {
 		if (size.back != size.front)
 			return false;
 
-		memset(*_data,0,size.front*size.back*sizeof(_DataType));
+		memset(*_data, 0, size.front * size.back * sizeof(_DataType));
 
 		for (Ulong i = 0; i < size.front; i++)
-			(*_data)[Get_ArrayNumber(size.front, {i,i})] = 1;
+			(*_data)[Get_ArrayNumber(size.front, { i,i })] = 1;
 
 		return true;
 	}
 
-	void copy(_DataType** _from,_DataType** _to,S_PAIR<Ulong,Ulong> size) {
+	//配列の値をコピーします。
+	void copy(_DataType** _from, _DataType** _to, S_PAIR<Ulong, Ulong> size) {
 		free(*_to);
 		*_to = NULL;
 
 		if (!_allocate(_to, (size.front * size.back)))
 			_error("Failed to allocate.");
 
-		for (Ulong i = 0; i < (size.back * size.front);i++)
+		for (Ulong i = 0; i < (size.back * size.front); i++)
 			(*_to)[i] = (*_from)[i];
+
+		return;
 	}
 
-	void view(_DataType** _data,S_PAIR<Ulong,Ulong> size) {
+	//指定された行を入れ替えます。
+	void _replace_line(_DataType** _d, S_PAIR<Ulong, Ulong> size, Ulong _data1, Ulong _data2) {
+		Ulong& width = size.front;
+
+		for (Ulong x = 0; x < width; x++) {
+			_DataType _buf = (*_d)[Get_ArrayNumber(width, { x,_data1 })];
+
+			(*_d)[Get_ArrayNumber(width, { x,_data1 })] = (*_d)[Get_ArrayNumber(width, { x,_data2 })];
+			(*_d)[Get_ArrayNumber(width, { x,_data2 })] = _buf;
+		}
+
+		return;
+	}
+
+	//列を入れ替えます。
+	void _replace_column(_DataType** _d, S_PAIR<Ulong, Ulong> size, Ulong _data1, Ulong _data2) {
+		for (Ulong y = 0; y < size.back; y++) {
+			_DataType _buf = (*_d)[Get_ArrayNumber(size.front, { _data1,y })];
+
+			(*_d)[Get_ArrayNumber(size.front, { _data1,y })] = (*_d)[Get_ArrayNumber(size.front, { _data2,y })];
+			(*_d)[Get_ArrayNumber(size.front, { _data2,y })] = _buf;
+		}
+
+		return;
+	}
+
+	//行列を表示します。
+	void view(_DataType** _data, S_PAIR<Ulong, Ulong> size, const char* _text = "%3.0lg ") {
 		for (Ulong i = 0; i < ((size.front) * (size.back)); i++) {
 			if (i % size.front == 0)
 				printf("\n");
-			printf("%.0lg ",(*_data)[i]);
+			printf(_text, (*_data)[i]);
 		}
+
+		return;
 	}
 
-	void _trans(S_PAIR<Ulong,Ulong> size,_DataType** _data,Ulong _pos,_DataType** _to) {
-		for (Ulong y = 0; y < size.back;y++) {
-			if (_pos != y) {
-				_DataType div = 0;
-				//ax+b=0 x -= b/a  
-				div = ((* _data)[Get_ArrayNumber(size.front, {_pos,y})] / (* _data)[Get_ArrayNumber(size.front, {_pos,_pos})]);
+	//余因子展開をして行列を一次元下げます。下げた値は_storeに格納されます。
+	void _cofactor_expansion(_DataType** _data, S_PAIR<Ulong, Ulong> size, std::vector<matrix<_DataType>>* _store, std::vector<_DataType>* coefficient,Ulong column = 0) {
+		if (size.back != size.front)
+			_error("different size:_cofactor_expansion.");
 
-				//その他列への適用
-				for (Ulong x = 0; x < size.front; x++) {
-					(*_data)[Get_ArrayNumber(size.front , { x,y })] -= div * (( * _data)[Get_ArrayNumber(size.front, {x,_pos})]);
-					(*_to)  [Get_ArrayNumber(size.front , { x,y })] -= div * (( * _to)  [Get_ArrayNumber(size.front, {x,_pos})]);
+		//格納先の初期化
+		_store->erase(_store->begin(), _store->end());
+
+		//余因子展開をした結果格納先のメモリを確保します。
+		for (Ulong _count = 0; _count < size.back; _count++)
+			_store->push_back({ size.front - 1,size.back - 1 });
+
+		for (Ulong _y_pos = 0; _y_pos < size.back; _y_pos++) {
+			//_bufsに格納していく。
+			//全配列参照
+			for (Ulong i = 0, _bufs_pos = 0; i < size.front * size.back; i++) {
+				//iの地点がxまたはyでない場合格納する。
+				S_PAIR<Ulong, Ulong> pos = Get_XYNumber(size.front, i);
+				if (pos.front != column && pos.back != _y_pos) {
+					((*_store)[_y_pos])[Get_XYNumber(size.front - 1, _bufs_pos)] = (*_data)[i];
+					_bufs_pos++;
+				}
+			}
+			
+			coefficient->push_back((*_data)[Get_ArrayNumber(size.front, { column,_y_pos })] * exponentiation(-1, column + _y_pos));
+		}
+
+		return;
+	}
+
+	//二次元まで次元を落とします。再帰で求めます。
+	S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> _cofactor_expansion_to_2(_DataType** _data,S_PAIR<Ulong, Ulong> size,Ulong column = 0,_DataType in_coeff=1) {
+		if (size.back != size.front)
+			_error("different size:_cofactor_expansion_to_2.");
+		
+		std::vector<matrix<_DataType>> _buf;
+		std::vector<_DataType>         _coeff;
+
+		this->_cofactor_expansion(_data, size, &_buf,&_coeff, column);
+
+		for (Ulong i = 0; i < _coeff.size(); i++)
+			_coeff[i] *= in_coeff;
+
+		if (size.front == 3)
+			return { _buf ,_coeff};
+
+		std::vector<S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>>> _bufs;
+		for (Ulong i = 0; i < _buf.size();i++)
+			_bufs.push_back(this->_cofactor_expansion_to_2((_DataType**)_buf[i].show_main, *(_buf[i].show_size), column,_coeff[i]));
+
+		S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> _retdata;
+
+		for (Ulong i = 0; i < _bufs.size(); i++) {
+			for (Ulong j = 0; j < _bufs[i].front.size(); j++) {
+				_retdata.front.push_back(_bufs[i].front[j]);
+				_retdata.back.push_back (_bufs[i].back[j]);
+			}
+		}
+		return _retdata;
+	}
+
+	//サラスの方式で解きます。2次元
+	_DataType _det_2(_DataType** _data,_DataType _coeff,S_PAIR<Ulong, Ulong> size) {
+		if (size.back != size.front)
+			_error("Different size:_det_2_3");
+		
+		if (size.front != 2)
+			_error("Must pass 2 as argument:_det_2_3");
+		
+		return  _coeff * ((*_data)[Get_ArrayNumber(size.front, { 0,0 })] * (*_data)[Get_ArrayNumber(size.front, { 1,1 })] - ((*_data)[Get_ArrayNumber(size.front, { 1,0 })] * (*_data)[Get_ArrayNumber(size.front, { 0,1 })]));
+	}
+
+	void _a_matrix(S_PAIR<Ulong, Ulong> size, _DataType** _data, _DataType** _to) {
+		//単位行列にする。
+		to_identity_matrix(size, _to);
+
+		//_pos:基準
+		for (Ulong _pos = 0; _pos < size.front; _pos++) {
+			for (Ulong y = 0; y < size.back; y++) {
+				if (_pos != y) {
+					_DataType div = 0;
+
+					//基準が0の場合行を入れ替える。
+					if ((*_data)[Get_ArrayNumber(size.front, { _pos,_pos })] == 0) {
+						for (Ulong findy = 0; findy < size.back; findy++) {
+							if ((*_data)[Get_ArrayNumber(size.front, { _pos,findy })] != 0) {
+								_replace_line(_data, size, _pos, findy);
+								_replace_line(_to, size, _pos, findy);
+							}
+						}
+					}
+
+					//ax+b=0 x -= b/a  
+					div = ((*_data)[Get_ArrayNumber(size.front, { _pos,y })] / (*_data)[Get_ArrayNumber(size.front, { _pos,_pos })]);
+
+					//その他列への適用
+					for (Ulong x = 0; x < size.front; x++) {
+						(*_data)[Get_ArrayNumber(size.front, { x,y })] -= div * ((*_data)[Get_ArrayNumber(size.front, { x,_pos })]);
+						(*_to)  [Get_ArrayNumber(size.front, { x,y })] -= div * ((*_to)  [Get_ArrayNumber(size.front, { x,_pos })]);
+					}
 				}
 			}
 		}
+
+		//基準が1になっていない場合その行へ適用し1にする。
+		for (Ulong _pos = 0; _pos < size.front; _pos++) {
+			for (Ulong _x = 0; _x < size.front; _x++) {
+				_DataType _is_zero_buf = (*_data)[Get_ArrayNumber(size.front, { _pos,_pos })];
+				if (_is_zero_buf != 0)
+					(*_to)[Get_ArrayNumber(size.front, { _x,_pos })] /= _is_zero_buf;
+			}
+		}
+
+		return;
 	}
 public:
+	//参照用
+	const _DataType**            show_main   = (const _DataType**)           &_main;
+	const S_PAIR<Ulong, Ulong>*  show_size   = (const S_PAIR<Ulong,Ulong>*)  &_size;
+	
 	//Constructor
 	//行列の幅、高さを指定します。
-	matrix(Ulong width,Ulong height) {
-		_size = {width,height};
+	matrix() { 
+		_size = { 0,0 }; 
+	}
+	matrix(Ulong width, Ulong height) {
+		_size = { width,height };
 
-		if (!_allocate(&_main, width*height))
+		if (!_allocate(&_main, width * height))
 			_error("Failed to allocate.");
 	}
-
-	matrix(matrix& _data) {
-		copy(&_data._main,&_main,_data._size);
+	matrix(const matrix& _data) {
+		copy((_DataType**)&_data._main, & _main, _data._size);
 		_size = _data._size;
 	}
 
@@ -165,19 +304,34 @@ public:
 
 		return *(_main + _buf);
 	}
-	matrix& operator =(matrix& _data) {
-		copy(&_data._main, &_main, _data._size);
+	matrix& operator  =(const matrix& _data) {
+		copy((_DataType**) & _data._main, &_main, _data._size);
 
 		return *this;
+	}
+	matrix& operator  =(S_PAIR<Ulong,Ulong> size) {
+		free(_main);
+		_size = { size.front,size.back };
+
+		if (!_allocate(&_main, _width*_height))
+			_error("Failed to allocate.");
+	}
+	matrix& operator +=(const matrix& _data) {
+		return add(_data);
+	}
+	matrix& operator *=(_DataType _data) {
+		return scalar_mul(_data);
 	}
 	matrix& operator *=(const matrix& _data) {
 		return mul(_data);
 	}
-	matrix& operator *(const matrix& _data) {
+	matrix& operator  *(const matrix& _data){
 		return mul(_data);
 	}
 
 
+	//Function
+	//演算
 	matrix& add(const matrix<_DataType>& _data) {
 		if (_data._height != _height || _data._width != _width)
 			_error("different size:add");
@@ -189,21 +343,19 @@ public:
 	}
 	matrix& sub(const matrix<_DataType>& _data) {
 		if (_data._height != _height || _data._width != _width)
-			_error("different siz:sub");
+			_error("different size:sub");
 
 		for (Ulong i = 0; i < _width * _height; i++)
 			*(_main + i) -= *(_data._main + i);
 
 		return *this;
 	}
-
 	matrix& scalar_mul(_DataType _d) {
 		for (Ulong i = 0; i < _height * _width;i++)
 			*(_main + i) *= _d;
 
 		return *this;
 	}
-	
 	//cij= Σ k=1,m (aik*bkj)を使用
 	matrix& mul(const matrix<_DataType>& _data) {
 		if (_width != _data._height)
@@ -231,7 +383,19 @@ public:
 		return *this;
 	}
 
-	matrix& A_matrix() {
+	//列の入れ替え
+	matrix& replace_column(Ulong num1,Ulong num2) {
+		_replace_column(&_main,_size,num1,num2);
+		return *this;
+	}
+	//行の入れ替え
+	matrix& replace_line  (Ulong num1, Ulong num2) {
+		_replace_line(&_main, _size, num1, num2);
+		return *this;
+	}
+
+	//逆行列を求めます。
+	matrix& matrix_inverse() {
 		if (_width != _height)
 			_error("different size:a_matrix");
 		
@@ -239,20 +403,8 @@ public:
 		_DataType* _buf = NULL;
 		if (!_allocate(&_buf, _width * _height))
 			_error("Failed to allocate:a_matrix");
-		
-		//単位行列にする。
-		to_identity_matrix({_width,_height},&_buf);
-		
-		for (Ulong x = 0; x < _width; x++)
-			_trans(_size, &_main, x, &_buf);
 
-		for (Ulong _pos = 0; _pos < _width; _pos++) {
-			for (Ulong _x = 0; _x < _width; _x++) {
-				_DataType _is_zero_buf = _main[Get_ArrayNumber(_width, { _pos,_pos })];
-				if(_is_zero_buf!=0)
-					_buf[Get_ArrayNumber(_width, { _x,_pos })] /= _is_zero_buf;
-			}
-		}
+		_a_matrix(_size, &_main, &_buf);
 
 		free(_main);
 		_main = _buf;
@@ -260,14 +412,50 @@ public:
 		return *this;
 	}
 
+	//行列式を求めます。
+	_DataType det() {
+		S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> test = this->_cofactor_expansion_to_2(&_main, _size);
+
+		_DataType _t = 0;
+
+		for (Ulong i = 0; i < test.front.size();i++) {
+			_t += this->_det_2((_DataType**)test.front[i].show_main,(_DataType)test.back[i], (S_PAIR<Ulong, Ulong>) * (test.front[i].show_size));
+		}
+
+		return _t;
+	}
+	//正則行列かどうか調べます。
+	bool is_holomorphic_matrix() {
+		if (this->det() == 0)
+			return false;
+
+		return true;
+	}
+
+	//単位行列にします。
 	matrix& to_identity() {
-		to_identity_matrix({_width,_height},&_main);
+		to_identity_matrix(&_main,{_width,_height});
 
 		return *this;
 	}
 
-	matrix& view_matrix() {
+	//行列を表示します。
+	matrix& view_matrix(const char* _text = "%3.0lg") {
 		view(&_main,_size);
+		return *this;
+	}
+
+	//行列を配列にコピーします。(配列を初期化します。)
+	matrix& copy_matrix(_DataType** _to) {
+		free(*_to);
+		*_to = NULL;
+
+		if (!_allocate(_to, _width * _height))
+			_error("Failed to allocate:copy_matrix.");
+		
+		for (Ulong _pos = 0; _pos < (_width * _height); _pos++)
+			(*_to)[_pos] = _main[_pos];
+
 		return *this;
 	}
 };
