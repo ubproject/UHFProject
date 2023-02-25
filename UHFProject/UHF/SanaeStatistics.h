@@ -21,9 +21,6 @@ constexpr auto SABSOLUTE(T X)      { return X < 0 ? X * -1 : X; }
 
 #define SANAEMATH_ERROR 1.0E-6    //0.000001までの誤差であれば許容する。
 
-template<typename T=double>
-constexpr bool IS_EQUAL_DECIMAL(T A, T B)  { return SABSOLUTE(A - B) <= SANAEMATH_ERROR; }
-
 template<typename T1,typename T2>
 struct S_PAIR {
 	T1 front;
@@ -428,7 +425,7 @@ public:
 					_buf[Get_ArrayNumber(_data._width, { x,y })] += this->_main[Get_ArrayNumber(_width, { k,y })] * _data._main[Get_ArrayNumber(_data._width,{ x,k })];
 				}
 				//誤差の修正(無限小数対策)
-				if (SABSOLUTE(_buf[Get_ArrayNumber(_data._width, {x,y})]-0) <= SANAEMATH_ERROR)
+				if (SABSOLUTE(_buf[Get_ArrayNumber(_data._width, {x,y})]) <= SANAEMATH_ERROR)
 					_buf[Get_ArrayNumber(_data._width, { x,y })] = 0;
 			}
 		}

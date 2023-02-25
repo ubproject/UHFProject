@@ -212,17 +212,19 @@ void SLCGs(Ulong _seed,Ulong _count){
 	return;
 }
 
-/*seedに負の数が入力された場合自動で決めます。*/
+/*seedに0が入力された場合自動で決めます。*/
 Ulong LCGs(Ulong _seed,Ulong _count){
 	if(LCGs_INFO.is_set_seed == FALSE)
 		SLCGs(_seed,_count);
 
-	if(_seed == 0)
-		_seed = LCGs_INFO.seed;
+	if (_seed == 0) {
+		_seed  = LCGs_INFO.seed;
+		_count = LCGs_INFO.count;
+	}
 
 	Ulong retdata = (Ulong)_seed;
 
-	for(Ulong i = 0;i < _count;i++)
+	for (Ulong i = 0; i < _count+LCGs_INFO.count; i++)
 		retdata = (SM_RANDOM_A * retdata) % SM_RANDOM_M;
 
 	LCGs_INFO.count++;
