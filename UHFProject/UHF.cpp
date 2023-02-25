@@ -89,7 +89,7 @@ void SanaeStrc() {
 	//sample._str=hello
 
 	//•¶š—ñ“ü‚ê‘Ö‚¦
-	STRC_COPY(&sample,"Hello World");//sample=Hello World
+	STRC_COPY   (&sample,"Hello World"    );//sample=Hello World
 	STRC_REPLACE(&sample,"World","Sanae",0);//sample=Hello Sanae
 
 	//ƒƒ‚ƒŠ‚ÌŠJ•ú
@@ -99,7 +99,7 @@ void SanaeStrc() {
 }
 int main() {
 	SanaeStrc();
-	SanaeStr();
+	SanaeStr ();
 
 	return 0;
 }

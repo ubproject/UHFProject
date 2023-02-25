@@ -222,7 +222,7 @@ private:
 		if (size.back != size.front)
 			_error("Different size:_cofactor_expansion_to_2.");
 		
-		if (size.front == 2)
+		if (size.front < 3)
 			_error("Must pass above 3  as argument:_cofactor_expansion_to_2.");
 
 		//行列格納用可変配列
@@ -427,7 +427,7 @@ public:
 				for (Ulong k = 0; k < _width;k++) {
 					_buf[Get_ArrayNumber(_data._width, { x,y })] += this->_main[Get_ArrayNumber(_width, { k,y })] * _data._main[Get_ArrayNumber(_data._width,{ x,k })];
 				}
-				//誤差の修正
+				//誤差の修正(無限小数対策)
 				if (SABSOLUTE(_buf[Get_ArrayNumber(_data._width, {x,y})]-0) <= SANAEMATH_ERROR)
 					_buf[Get_ArrayNumber(_data._width, { x,y })] = 0;
 			}
@@ -462,7 +462,7 @@ public:
 		return *this;
 	}
 
-	//逆行列を求めます。
+	//逆行列を求めます。A*A^-1 = 1
 	matrix& matrix_inverse() {
 		if (_width != _height)
 			_error("Different size:a_matrix");
@@ -485,8 +485,20 @@ public:
 
 	//行列式を求めます。
 	_DataType det() {
-		S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> test = this->_cofactor_expansion_to_2(&_main, _size);
+		if (_size.front != _size.back)
+			_error("Different size:det.");
 
+		switch (_size.front) {
+		case 1:
+			return _main[0];
+		case 2:
+			return this->_det_2(&_main, 1, {2,2});
+		default:
+			break;
+		}
+
+		S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> test = this->_cofactor_expansion_to_2(&_main, _size);
+		
 		_DataType _t = 0;
 
 		for (Ulong i = 0; i < test.front.size();i++)
@@ -512,7 +524,7 @@ public:
 
 	//行列を表示します。
 	matrix& view_matrix(const char* _text = "%3.0lg") {
-		view(&_main,_size);
+		view(&_main,_size,_text);
 		return *this;
 	}
 
