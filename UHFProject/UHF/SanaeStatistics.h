@@ -116,7 +116,7 @@ private:
 
 		//メモリ割り当て
 		if (!_allocate(_to, (size.front * size.back)))
-			_error("Failed to allocate.");
+			_error("Failed to allocate:copy.");
 
 		//値をコピー
 		for (Ulong i = 0; i < (size.back * size.front); i++)
@@ -165,7 +165,7 @@ private:
 	//余因子展開をして行列を一次元下げます。下げた値は_storeに格納されます。係数はcoeffcientに格納されます。
 	void _cofactor_expansion(_DataType** _data, S_PAIR<Ulong, Ulong> size, std::vector<matrix<_DataType>>* _store, std::vector<_DataType>* coefficient,Ulong column = 0) {
 		if (size.back != size.front)
-			_error("different size:_cofactor_expansion.");
+			_error("Different size:_cofactor_expansion.");
 
 		//格納先の初期化
 		_store->erase(_store->begin(), _store->end());
@@ -220,7 +220,7 @@ private:
 	*/
 	S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> _cofactor_expansion_to_2(_DataType** _data,S_PAIR<Ulong, Ulong> size,Ulong column = 0,_DataType in_coeff=1) {
 		if (size.back != size.front)
-			_error("different size:_cofactor_expansion_to_2.");
+			_error("Different size:_cofactor_expansion_to_2.");
 		
 		if (size.front == 2)
 			_error("Must pass above 3  as argument:_cofactor_expansion_to_2.");
@@ -388,7 +388,7 @@ public:
 	//演算
 	matrix& add(const matrix<_DataType>& _data) {
 		if (_data._height != _height || _data._width != _width)
-			_error("different size:add");
+			_error("Different size:add");
 
 		for (Ulong i = 0; i < _width * _height; i++)
 			*(_main + i) += *(_data._main + i);
@@ -397,7 +397,7 @@ public:
 	}
 	matrix& sub(const matrix<_DataType>& _data) {
 		if (_data._height != _height || _data._width != _width)
-			_error("different size:sub");
+			_error("Different size:sub");
 
 		for (Ulong i = 0; i < _width * _height; i++)
 			*(_main + i) -= *(_data._main + i);
@@ -413,7 +413,7 @@ public:
 	//cij= Σ k=1,m (aik*bkj)を使用
 	matrix& mul(const matrix<_DataType>& _data) {
 		if (_width != _data._height)
-			_error("different size:mul");
+			_error("Different size:mul");
 
 		_DataType* _buf = NULL;
 		if (!this->_allocate(&_buf, (_height * _data._width))) {
@@ -451,8 +451,11 @@ public:
 	//逆行列を求めます。
 	matrix& matrix_inverse() {
 		if (_width != _height)
-			_error("different size:a_matrix");
+			_error("Different size:a_matrix");
 		
+		if (this->det()==0)
+			_error("This equation has no real number solution:matrix_inverse.");
+
 		//返却する値
 		_DataType* _buf = NULL;
 		if (!_allocate(&_buf, _width * _height))
