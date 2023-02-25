@@ -36,8 +36,9 @@ struct S_PAIR {
 template<typename _DataType = double>
 class matrix {
 private:
+	//行列の格納先
 	_DataType* _main = NULL;
-
+	//列と行を格納する。
 	S_PAIR<Ulong, Ulong> _size = { 0,0 };
 
 	//列
@@ -74,6 +75,7 @@ private:
 
 	//配列を確保します。返り値として成功:true,失敗:falseを返します。
 	bool _allocate(_DataType** _data, Ulong size) {
+		//メモリの割り当てを増やす場合があるのでreallocを使う。
 		_DataType* buf = (_DataType*)realloc(*_data, size * sizeof(_DataType));
 
 		if (buf == NULL) {
@@ -96,8 +98,10 @@ private:
 		if (size.back != size.front)
 			return false;
 
+		//データをすべて0にする。
 		memset(*_data, 0, size.front * size.back * sizeof(_DataType));
 
+		//単位行列にする。
 		for (Ulong i = 0; i < size.front; i++)
 			(*_data)[Get_ArrayNumber(size.front, { i,i })] = 1;
 
@@ -106,12 +110,15 @@ private:
 
 	//配列の値をコピーします。
 	void copy(_DataType** _from, _DataType** _to, S_PAIR<Ulong, Ulong> size) {
+		//データの初期化
 		free(*_to);
 		*_to = NULL;
 
+		//メモリ割り当て
 		if (!_allocate(_to, (size.front * size.back)))
 			_error("Failed to allocate.");
 
+		//値をコピー
 		for (Ulong i = 0; i < (size.back * size.front); i++)
 			(*_to)[i] = (*_from)[i];
 
@@ -155,7 +162,7 @@ private:
 		return;
 	}
 
-	//余因子展開をして行列を一次元下げます。下げた値は_storeに格納されます。
+	//余因子展開をして行列を一次元下げます。下げた値は_storeに格納されます。係数はcoeffcientに格納されます。
 	void _cofactor_expansion(_DataType** _data, S_PAIR<Ulong, Ulong> size, std::vector<matrix<_DataType>>* _store, std::vector<_DataType>* coefficient,Ulong column = 0) {
 		if (size.back != size.front)
 			_error("different size:_cofactor_expansion.");
@@ -185,26 +192,63 @@ private:
 		return;
 	}
 
-	//二次元まで次元を落とします。再帰で求めます。
+	/*二次元まで次元を落とします。再帰で求めます。
+	*
+	* 例:4*4行列->2*2行列
+	* 1   2  3  4
+	* 5   6  7  8
+	* 9  10 11 12
+	* 13 14 15 16
+	* 
+	*	     6  7  8	
+	*	1*	10 11 12 =>	(1*6)	11  12	+	(1*-10)	 7	 8	+	(1*14)	 7	 8
+	*		14 15 16			15  16				15	16				11	12
+	* 
+	*		 2  3  4	
+	*   -5*	10 11 12 =>	(-5*2)	11	12	+	(-5*-10) 3	 4	+	(-5*14)	 3	 4
+	*		14 15 16			15	16				15	16				11	12
+	* 
+	*		 2  3  4	
+	*	9*	 6  7  8 =>	(9*2)	 7	 8	+	(9*-6)	 3	 4	+	(9*14)	 3	 4
+	*		14 15 16			15	16				15	16				 7	 8
+	* 
+	*		 2  3  4	
+	*  -13*	 6  7  8 =>	(-13*2)	 7	 8	+	(-13*-6) 3	 4	+	(-13*10) 3	 4
+	*		10 11 12			11	12				11	12				 7	 8
+	* 
+	* Sample:
+	*	E*	 1	 2	=>	E*(1*4-2*3)
+	*		 3	 4
+	*/
 	S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> _cofactor_expansion_to_2(_DataType** _data,S_PAIR<Ulong, Ulong> size,Ulong column = 0,_DataType in_coeff=1) {
 		if (size.back != size.front)
 			_error("different size:_cofactor_expansion_to_2.");
 		
+		if (size.front == 2)
+			_error("Must pass above 3  as argument:_cofactor_expansion_to_2.");
+
+		//行列格納用可変配列
 		std::vector<matrix<_DataType>> _buf;
+		//係数格納用
 		std::vector<_DataType>         _coeff;
 
+		//一次元下げる
 		this->_cofactor_expansion(_data, size, &_buf,&_coeff, column);
 
+		//回帰で計算するので前回の係数を自分に掛ける。
 		for (Ulong i = 0; i < _coeff.size(); i++)
 			_coeff[i] *= in_coeff;
 
+		//3*3行列だった場合1次元下げたので2*2行列になるそのためそのまま返す。
 		if (size.front == 3)
 			return { _buf ,_coeff};
 
+		//自分自身を呼び出すので呼び出し結果をここに入れる。
 		std::vector<S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>>> _bufs;
 		for (Ulong i = 0; i < _buf.size();i++)
 			_bufs.push_back(this->_cofactor_expansion_to_2((_DataType**)_buf[i].show_main, *(_buf[i].show_size), column,_coeff[i]));
 
+		//行列と係数の格納
 		S_PAIR<std::vector<matrix<_DataType>>, std::vector<_DataType>> _retdata;
 
 		for (Ulong i = 0; i < _bufs.size(); i++) {
@@ -224,6 +268,7 @@ private:
 		if (size.front != 2)
 			_error("Must pass 2 as argument:_det_2_3");
 		
+		//サラスの方式で解く
 		return  _coeff * ((*_data)[Get_ArrayNumber(size.front, { 0,0 })] * (*_data)[Get_ArrayNumber(size.front, { 1,1 })] - ((*_data)[Get_ArrayNumber(size.front, { 1,0 })] * (*_data)[Get_ArrayNumber(size.front, { 0,1 })]));
 	}
 
@@ -319,16 +364,27 @@ public:
 	matrix& operator +=(const matrix& _data) {
 		return add(_data);
 	}
+	matrix& operator -=(const matrix& _data) {
+		return sub(_data);
+	}
 	matrix& operator *=(_DataType _data) {
 		return scalar_mul(_data);
 	}
 	matrix& operator *=(const matrix& _data) {
 		return mul(_data);
 	}
+	matrix& operator  +(const matrix& _data) {
+		return add(_data);
+	}
+	matrix& operator  -(const matrix& _data) {
+		return sub(_data);
+	}
+	matrix& operator *(_DataType _data) {
+		return scalar_mul(_data);
+	}
 	matrix& operator  *(const matrix& _data){
 		return mul(_data);
 	}
-
 
 	//Function
 	//演算
@@ -418,9 +474,8 @@ public:
 
 		_DataType _t = 0;
 
-		for (Ulong i = 0; i < test.front.size();i++) {
+		for (Ulong i = 0; i < test.front.size();i++)
 			_t += this->_det_2((_DataType**)test.front[i].show_main,(_DataType)test.back[i], (S_PAIR<Ulong, Ulong>) * (test.front[i].show_size));
-		}
 
 		return _t;
 	}
