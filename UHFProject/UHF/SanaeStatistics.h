@@ -22,7 +22,7 @@ constexpr auto SABSOLUTE(T X)      { return X < 0 ? X * -1 : X; }
 #define SANAEMATH_ERROR 1.0E-6    //0.000001までの誤差であれば許容する。
 
 template<typename T=double>
-constexpr bool IS_EQUAL(T A, T B)  { return SABSOLUTE(A - B) <= SANAEMATH_ERROR; }
+constexpr bool IS_EQUAL_DECIMAL(T A, T B)  { return SABSOLUTE(A - B) <= SANAEMATH_ERROR; }
 
 template<typename T1,typename T2>
 struct S_PAIR {
@@ -272,7 +272,7 @@ private:
 
 	void _a_matrix(S_PAIR<Ulong, Ulong> size, _DataType** _data, _DataType** _to) {
 		//単位行列にする。
-		to_identity_matrix(size, _to);
+		to_identity_matrix(_to,size);
 
 		//_pos:基準
 		for (Ulong _pos = 0; _pos < size.front; _pos++) {
@@ -427,6 +427,9 @@ public:
 				for (Ulong k = 0; k < _width;k++) {
 					_buf[Get_ArrayNumber(_data._width, { x,y })] += this->_main[Get_ArrayNumber(_width, { k,y })] * _data._main[Get_ArrayNumber(_data._width,{ x,k })];
 				}
+				//誤差の修正
+				if (SABSOLUTE(_buf[Get_ArrayNumber(_data._width, {x,y})]-0) <= SANAEMATH_ERROR)
+					_buf[Get_ArrayNumber(_data._width, { x,y })] = 0;
 			}
 		}
 
@@ -434,6 +437,17 @@ public:
 		_main   = _buf;
 		_width  = _data._width;
 
+		return *this;
+	}
+
+	//指定した行に書き込みます。
+	matrix& write_line(Ulong pos,std::vector<_DataType> write) {
+		if (write.size() != this->_size.front)
+			_error("Different size:write_line.");
+
+		for (Ulong i = 0; i < write.size();i++)
+			_main[Get_ArrayNumber(this->_size.front, { i, pos })] = write[i];
+		
 		return *this;
 	}
 

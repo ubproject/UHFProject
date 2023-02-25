@@ -98,42 +98,8 @@ void SanaeStrc() {
 	return;
 }
 int main() {
-	
 	SanaeStrc();
 	SanaeStr();
-	
-	matrix test = {5,5};
 
-	test[{0, 0}] = 1;
-	test[{1, 0}] = 2;
-	test[{2, 0}] = 3;
-	test[{3, 0}] = 4;
-	test[{4, 0}] = 5;
-
-	test[{0, 1}] = 6;
-	test[{1, 1}] = 7;
-	test[{2, 1}] = 8;
-	test[{3, 1}] = 9;
-	test[{4, 1}] = 10;
-
-	test[{0, 2}] = 11;
-	test[{1, 2}] = 12;
-	test[{2, 2}] = 13;
-	test[{3, 2}] = 14;
-	test[{4, 2}] = 15;
-	
-	test[{0, 3}] = 16;
-	test[{1, 3}] = 17;
-	test[{2, 3}] = 18;
-	test[{3, 3}] = 19;
-	test[{4, 3}] = 20;
-
-	test[{0, 4}] = 21;
-	test[{1, 4}] = 22;
-	test[{2, 4}] = 23;
-	test[{3, 4}] = 24;
-	test[{4, 4}] = 25;
-
-	printf("s—ñ®:%lg\n",test.det());
 	return 0;
 }

@@ -42,6 +42,10 @@ Sanae.h
     1.  stdio.h
     2.  SanaeStrc.h
 	3.	SanaeTypes.h
+- UHF/SanaeStatistics.h
+	1.	vector
+	2.	stdexcept
+	3.	SanaeTypes.h
 
 # 型/メンバ紹介
 # C++言語
@@ -127,6 +131,28 @@ Sanae.h
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
 ## SanaeStatistics.h
+	//行列を扱う5*5行列
+	matrix test = {5,5};
+	
+	test.write_line(0, {  3, 1, 1, 3, 0 });
+	test.write_line(1, {  5, 1, 3, 2, 2 });
+	test.write_line(2, {  2, 0, 1, 8, 1 });
+	test.write_line(3, {  0, 1, 3, 9, 3 });
+	test.write_line(4, {  2, 2, 5, 1, 5 });
+
+	test.view_matrix("%5.0lf ");
+
+	printf("行列式:%lg\n",test.det());//86
+
+	matrix buf = test;
+
+	//逆行列にする。
+	test.matrix_inverse();
+
+	//元の式と逆行列を掛けると単位行列になる。
+	(buf * test).view_matrix();
+	
+
 	//92を素因数分解
 	UINT a = 92;
 	std::vector<UINT> test;
