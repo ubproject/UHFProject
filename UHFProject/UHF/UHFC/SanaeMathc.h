@@ -118,6 +118,30 @@ double log_s(double _data, double low_num, Ulong accuracy) {
 	return _retdata;
 }
 
+/*
+* ニュートン法によりk乗根の値を求めます。
+* 1:Xn+1 =Xn-(f(Xn)/f'(Xn))
+* 2:f(Xn)=X^k-θとする。
+* 1の式に2を入れると以下のようになる。
+* Xn+1 = Xn - (Xn^k-θ)/(kXn^(k-1))
+* k-1  = ωと置く。
+* Xn+1=kXn^(ω+1)/(kXn^ω)-(Xn^k-θ)/(kXn^ω)
+* ={(k-1)Xn^(ω+1)+θ)}/kXn^ω
+* ={(1-(1/k))Xn+(θ/kXn^ω)}
+* {(k-1)/k}Xn+(θ/kXn^ω)
+* (1/k)*{(k-1)Xn+(θ/Xn^(k-1))}
+* 
+* となる。
+*/
+double root_newton(Uint _data,MINI rootnum,Ulong _digit) {
+	double Xn = _data;
+
+	for (Ulong i = 0; i < _digit+1;i++)
+		Xn = ((rootnum-1)*Xn+(_data/exponentiation(Xn,rootnum-1)))/rootnum;
+	
+	return Xn;
+}
+
 /*ルートを求めます。
  * 第二引数に根号数を入れてください。
  */
