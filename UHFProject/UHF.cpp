@@ -100,6 +100,5 @@ void SanaeStrc() {
 int main() {
 	SanaeStrc();
 	SanaeStr ();
-	
 	return 0;
 }

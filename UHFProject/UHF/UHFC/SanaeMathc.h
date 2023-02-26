@@ -18,6 +18,9 @@
 #define IS_INT         (A)   ((A - (Ulong)A)==0)
 #define IS_EQUAL_DOUBLE(A,B) (ABS_SANAE(A-B) <= ERROR_SANAE)
 
+//ルートを求める際ニュートン法を使用します。
+#define USE_NEWTON_METHOD TRUE
+
 
 /*INCLUDE*/
 #include <stdlib.h>
@@ -123,15 +126,17 @@ double log_s(double _data, double low_num, Ulong accuracy) {
 * ニュートン法によりk乗根の値を求めます。
 * 1:Xn+1 =Xn-(f(Xn)/f'(Xn))
 * 2:f(Xn)=X^k-θとする。
+* 
 * 1の式に2を入れると以下のようになる。
 * Xn+1 = Xn - (Xn^k-θ)/(kXn^(k-1))
 * k-1  = ωと置く。
+* 
 * Xn+1=kXn^(ω+1)/(kXn^ω)-(Xn^k-θ)/(kXn^ω)
 * ={(k-1)Xn^(ω+1)+θ)}/kXn^ω
 * ={(1-(1/k))Xn+(θ/kXn^ω)}
-* {(k-1)/k}Xn+(θ/kXn^ω)
-* (1/k)*{(k-1)Xn+(θ/Xn^(k-1))}
+* ={(k-1)/k}Xn+(θ/kXn^ω)
 * 
+* =(1/k)*{(k-1)Xn+(θ/Xn^(k-1))}
 * となる。
 */
 double root_newton(Uint _data,MINI rootnum,Ulong digitnum) {
@@ -149,6 +154,10 @@ double root_newton(Uint _data,MINI rootnum,Ulong digitnum) {
 double root(Uint _data, MINI rootnum, MINI digitnum) {
 	if (digitnum > 6)
 		digitnum = 6;
+
+	if (USE_NEWTON_METHOD == TRUE)
+		return root_newton(_data,rootnum,digitnum);
+
 	/*整数を見つける*/
 	//retdataに値を格納
 	double retdata = 0;
