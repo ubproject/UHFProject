@@ -98,9 +98,8 @@ void SanaeStrc() {
 	return;
 }
 int main() {
-	//SanaeStrc();
-	//SanaeStr ();
+	SanaeStrc();
+	SanaeStr ();
 	
-	printf("%lg\n",root_newton(2,2,3));
 	return 0;
 }

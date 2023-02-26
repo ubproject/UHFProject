@@ -181,7 +181,6 @@ Sanae.h
 	// 2
 	//よってx=3,y=2である。
 
-
 	//92を素因数分解
 	UINT a = 92;
 	std::vector<UINT> test;

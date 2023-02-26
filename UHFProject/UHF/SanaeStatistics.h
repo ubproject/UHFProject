@@ -35,6 +35,7 @@ class matrix {
 private:
 	//行列の格納先
 	_DataType* _main = NULL;
+	
 	//列と行を格納する。
 	S_PAIR<Ulong, Ulong> _size = { 0,0 };
 
@@ -310,6 +311,36 @@ private:
 
 		return;
 	}
+
+	void _mul(_DataType** _num1,S_PAIR<Ulong,Ulong> _num1_size,_DataType** _num2,S_PAIR<Ulong,Ulong> _num2_size,_DataType** _store,S_PAIR<Ulong,Ulong>* _store_size_p) {
+		if (_num1 == _store || _num2 == _store)
+			_error("Must pass different pointer as argument.");
+
+		if (_num1_size.front != _num2_size.back)
+			_error("Different size:_mul");
+
+		free(*_store);
+		*_store = NULL;
+		
+		if (!this->_allocate(_store, (_num1_size.back * _num2_size.front)))
+			_error("Failed to allocate:mul");
+
+		for (Ulong y = 0; y < _num1_size.back; y++) {
+			for (Ulong x = 0; x < _num2_size.front; x++) {
+				//それぞれの計算を行う
+				for (Ulong k = 0; k < _num1_size.front; k++)
+					(*_store)[Get_ArrayNumber(_num2_size.front, { x,y })] += (*_num1)[Get_ArrayNumber(_num1_size.front, {k,y})] * (*_num2)[Get_ArrayNumber(_num2_size.front, {x,k})];
+				
+				//誤差の修正(無限小数対策)
+				if (SABSOLUTE((*_store)[Get_ArrayNumber(_num2_size.front, {x,y})]) <= SANAEMATH_ERROR)
+					(*_store)[Get_ArrayNumber(_num2_size.front, {x,y})] = 0;
+			}
+		}
+		
+		_store_size_p->front = _num2_size.front;
+		_store_size_p->back  = _num1_size.back;
+		return;
+	}
 public:
 	//参照用
 	const _DataType**            show_main   = (const _DataType**)           &_main;
@@ -368,17 +399,66 @@ public:
 	matrix& operator *=(const matrix& _data) {
 		return mul(_data);
 	}
-	matrix& operator  +(const matrix& _data) {
-		return add(_data);
+	matrix operator   +(const matrix& _data) {
+		if (_data._height != _height || _data._width != _width)
+			_error("Different size:sub");
+
+		_DataType* _buf = NULL;
+		this->copy(&_main, &_buf, _size);
+
+		for (Ulong i = 0; i < _width * _height; i++)
+			*(_buf + i) += *(_data._main + i);
+
+		matrix _ret;
+		_ret.copy_array(&_buf, _size);
+
+		free(_buf);
+
+		return _ret;
 	}
-	matrix& operator  -(const matrix& _data) {
-		return sub(_data);
+	matrix operator   -(const matrix& _data) {
+		if (_data._height != _height || _data._width != _width)
+			_error("Different size:sub");
+
+		_DataType* _buf = NULL;
+		this->copy(&_main, &_buf, _size);
+
+		for (Ulong i = 0; i < _width * _height; i++)
+			*(_buf + i) -= *(_data._main + i);
+
+		matrix _ret;
+		_ret.copy_array(&_buf, _size);
+
+		free(_buf);
+
+		return _ret;
 	}
-	matrix& operator *(_DataType _data) {
-		return scalar_mul(_data);
+	matrix operator   *(_DataType _data) {
+		_DataType* _buf = NULL;
+		this->copy(&_main,&_buf,_size);
+
+		for (Ulong i = 0; i < _height * _width; i++)
+			*(_buf + i) *= _data;
+
+		matrix _ret;
+		_ret.copy_array(&_buf,_size);
+
+		free(_buf);
+
+		return _ret;
 	}
-	matrix& operator  *(const matrix& _data){
-		return mul(_data);
+	matrix operator   *(const matrix& _data){
+		_DataType* _buf = NULL;
+		S_PAIR<Ulong, Ulong> size;
+
+		this->_mul(&_main, _size, (_DataType**)&_data._main, (S_PAIR<Ulong, Ulong>) _data._size, &_buf, &size);
+
+		matrix _retdata;
+		_retdata.copy_array(&_buf,size);
+
+		free(_buf);
+
+		return _retdata;
 	}
 
 	//Function
@@ -409,30 +489,13 @@ public:
 	}
 	//cij= Σ k=1,m (aik*bkj)を使用
 	matrix& mul(const matrix<_DataType>& _data) {
-		if (_width != _data._height)
-			_error("Different size:mul");
-
+		
 		_DataType* _buf = NULL;
-		if (!this->_allocate(&_buf, (_height * _data._width))) {
-			free(_main);
-			_error("Failed to allocate:mul");
-		}
+		this->copy(&_main,&_buf,_size);
 
-		for (Ulong y = 0; y < _height; y++) {
-			for (Ulong x = 0; x < _data._width; x++) {
-				//それぞれの計算を行う
-				for (Ulong k = 0; k < _width;k++) {
-					_buf[Get_ArrayNumber(_data._width, { x,y })] += this->_main[Get_ArrayNumber(_width, { k,y })] * _data._main[Get_ArrayNumber(_data._width,{ x,k })];
-				}
-				//誤差の修正(無限小数対策)
-				if (SABSOLUTE(_buf[Get_ArrayNumber(_data._width, {x,y})]) <= SANAEMATH_ERROR)
-					_buf[Get_ArrayNumber(_data._width, { x,y })] = 0;
-			}
-		}
-
-		free(_main);
-		_main   = _buf;
-		_width  = _data._width;
+		this->_mul(&_buf,_size,(_DataType**) &_data._main,(S_PAIR<Ulong,Ulong>) _data._size, &_main,&_size);
+		
+		free(_buf);
 
 		return *this;
 	}
@@ -460,24 +523,33 @@ public:
 	}
 
 	//逆行列を求めます。A*A^-1 = 1
-	matrix& matrix_inverse() {
+	matrix inverse() {
 		if (_width != _height)
 			_error("Different size:a_matrix");
-		
-		if (this->det()==0)
+
+		if (this->det() == 0)
 			_error("This equation has no real number solution:matrix_inverse.");
 
-		//返却する値
 		_DataType* _buf = NULL;
 		if (!_allocate(&_buf, _width * _height))
 			_error("Failed to allocate:a_matrix");
 
+		_DataType* _copy = NULL;
+		this->copy(&_main,&_copy,_size);
+
 		_a_matrix(_size, &_main, &_buf);
 
-		free(_main);
-		_main = _buf;
+		matrix _retdata;
+		_retdata.copy_array(&_buf, {_width, _height});
 
-		return *this;
+		free(_main);
+		free(_buf);
+
+		_main = NULL;
+		copy(&_copy,&_main,_size);
+
+		free(_copy);
+		return _retdata;
 	}
 
 	//行列式を求めます。
@@ -505,7 +577,7 @@ public:
 	}
 
 	//正則行列かどうか調べます。
-	bool is_holomorphic_matrix() {
+	bool is_holomorphic() {
 		if (this->det() == 0)
 			return false;
 
@@ -520,7 +592,7 @@ public:
 	}
 
 	//行列を表示します。
-	matrix& view_matrix(const char* _text = "%3.0lg") {
+	matrix& view(const char* _text = "%3.0lg") {
 		view(&_main,_size,_text);
 		return *this;
 	}
@@ -538,29 +610,36 @@ public:
 
 		return *this;
 	}
-
-	//転置を行います。
-	matrix& transpose() {
-		//行列のコピー
-		_DataType* _copy = NULL;
-		this->copy(&_main, &_copy, _size);
-
+	//配列を自分にコピーします。
+	matrix& copy_array(_DataType** _from,S_PAIR<Ulong,Ulong> size) {
 		free(_main);
 		_main = NULL;
 
-		this->_allocate(&_main,_size.front*_size.back);
+		copy(_from,&_main,size);
+		_size = size;
+
+		return *this;
+	}
+
+	//転置を行います。
+	matrix transpose() {
+		//行列のコピー
+		_DataType* _copy = NULL;
+		
+		this->_allocate(&_copy,_size.front*_size.back);
 
 		for (Ulong x = 0; x < _size.front;x++) {
 			for (Ulong y = 0; y < _size.back; y++) {
-				_main[Get_ArrayNumber(_size.back, { y,x })] = _copy[Get_ArrayNumber(_size.front, { x,y })];
+				_copy[Get_ArrayNumber(_size.back, { y,x })] = _main[Get_ArrayNumber(_size.front, { x,y })];
 			}
 		}
 
+		matrix retdata;
+		retdata.copy_array(&_copy, { _size.back,_size.front });
+		
 		free(_copy);
 
-		_size = {_size.back,_size.front};
-
-		return *this;
+		return retdata;
 	}
 };
 

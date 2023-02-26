@@ -32,6 +32,7 @@ Ulong  get_digit     (Ulong  _data);
 RETNUM IS_PRIMENUM   (Ulong  _data);
 double exponentiation(double _data, Slong  _count);
 double log_s         (double _data, double low_num,  Ulong accuracy);
+double root_newton   (Uint   _data, MINI   rootnum,  Ulong digitnum);
 double root          (Uint   _data, MINI   rootnum,  MINI  digitnum);
 void   SLCGs         (Ulong  _seed, Ulong  _count);
 Ulong  LCGs          (Ulong  _seed, Ulong  _count);
@@ -133,10 +134,10 @@ double log_s(double _data, double low_num, Ulong accuracy) {
 * 
 * となる。
 */
-double root_newton(Uint _data,MINI rootnum,Ulong _digit) {
+double root_newton(Uint _data,MINI rootnum,Ulong digitnum) {
 	double Xn = _data;
 
-	for (Ulong i = 0; i < _digit+1;i++)
+	for (Ulong i = 0; i < digitnum+1;i++)
 		Xn = ((rootnum-1)*Xn+(_data/exponentiation(Xn,rootnum-1)))/rootnum;
 	
 	return Xn;
