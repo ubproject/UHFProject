@@ -23,6 +23,7 @@ typedef unsigned int      Uint;
 typedef unsigned char     RETNUM;
 typedef unsigned char     MINI;
 
+
 /*多目的用*/
 /*True or False*/
 enum boolean{
@@ -54,7 +55,6 @@ typedef struct{
 const WRITE_INFO BASICW = {0,RANGE_DEFAULT};
 
 
-
 /*SanaeStrc.h*/
 typedef struct{
 	char* _str;       //Store the pointer
@@ -74,6 +74,20 @@ const WSTRC WSTRC_Init_Value = {NULL,0};
 
 
 /*SanaeMathc.h*/
+/*マクロ*/
+//絶対値に直します。
+#define   ABS_SANAE    (A)   ((A<0)?(-1*A): A)
+//誤差
+#define ERROR_SANAE    1.0e-6
+
+//整数か実数か判定します。
+#define IS_INT         (A)   ((A - (Ulong)A)==0)
+//誤差の範囲内かどうか調べます。
+#define IS_EQUAL_DOUBLE(A,B) (ABS_SANAE(A-B) <= ERROR_SANAE)
+
+//ルートを求める際ニュートン法を使用します。
+#define USE_NEWTON_METHOD TRUE
+
 //LCGs関数用
 #define SM_RANDOM_A 48271
 #define SM_RANDOM_M 2147483648-1

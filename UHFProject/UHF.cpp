@@ -54,7 +54,6 @@ void SanaeStr() {
 	eco
 	*/
 
-
 	//最初から最後まで削除する。
 	sample_str.erase({ 0,strlen(sample_str.c_str()) });
 	//sample_str.erase(RANGE_DEFAULT);
@@ -97,8 +96,61 @@ void SanaeStrc() {
 
 	return;
 }
+void SanaeMatrix() {
+	//行列を扱う5*5行列
+	matrix test = { 5,5 };
+
+	test.write_line(0, { 3, 1, 1, 3, 0 });
+	test.write_line(1, { 5, 1, 3, 2, 2 });
+	test.write_line(2, { 2, 0, 1, 8, 1 });
+	test.write_line(3, { 0, 1, 3, 9, 3 });
+	test.write_line(4, { 2, 2, 5, 1, 5 });
+
+	test.view("%5.0lf ");
+
+	printf("行列式:%lg\n", test.det());//86
+
+	matrix buf = test;
+
+	//逆行列にする。
+	test.inverse();
+
+	//元の式と逆行列を掛けると単位行列になる。A*A^-1=1
+	(buf * test).view("%5.0lf");
+
+	//9x+2y=13
+	//5x+9y=33をx,yについて解く
+	/*
+	9 2 * x = 13
+	5 9   y   33
+	   ↓
+	A * x = Z
+		y
+
+	A^-1*A=1より
+
+	x = A^-1*Z
+	y
+
+	これを解くことでx,yについて求めることができる。
+	*/
+	matrix z = { 1,2 };
+	z[{0, 0}] = 13;
+	z[{0, 1}] = 33;
+
+	matrix A = { 2,2 };
+	A.write_line(0, { 3,2 });
+	A.write_line(1, { 5,9 });
+
+	(A.inverse() * z).view();
+	// 3
+	// 2
+	//よってx=3,y=2である。
+}
 int main() {
 	SanaeStrc();
 	SanaeStr ();
+	SanaeMatrix();
+
 	return 0;
 }

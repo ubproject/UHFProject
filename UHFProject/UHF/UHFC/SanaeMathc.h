@@ -11,17 +11,6 @@
 #define UHFC_SANAEMATHC_H_
 
 
-/*マクロ*/
-#define   ABS_SANAE    (A)   ((A<0)?(-1*A): A)
-#define ERROR_SANAE    (A)   (1.0e-6)
-
-#define IS_INT         (A)   ((A - (Ulong)A)==0)
-#define IS_EQUAL_DOUBLE(A,B) (ABS_SANAE(A-B) <= ERROR_SANAE)
-
-//ルートを求める際ニュートン法を使用します。
-#define USE_NEWTON_METHOD TRUE
-
-
 /*INCLUDE*/
 #include <stdlib.h>
 #include <limits.h>
@@ -124,6 +113,8 @@ double log_s(double _data, double low_num, Ulong accuracy) {
 
 /*
 * ニュートン法によりk乗根の値を求めます。
+* 第三引数の値を増やせば増やすほど精度が上がります。
+* 
 * 1:Xn+1 =Xn-(f(Xn)/f'(Xn))
 * 2:f(Xn)=X^k-θとする。
 * 
@@ -139,10 +130,10 @@ double log_s(double _data, double low_num, Ulong accuracy) {
 * =(1/k)*{(k-1)Xn+(θ/Xn^(k-1))}
 * となる。
 */
-double root_newton(Uint _data,MINI rootnum,Ulong digitnum) {
+double root_newton(Uint _data,MINI rootnum,Ulong _count) {
 	double Xn = _data;
 
-	for (Ulong i = 0; i < digitnum+1;i++)
+	for (Ulong i = 0; i < _count+1;i++)
 		Xn = ((rootnum-1)*Xn+(_data/exponentiation(Xn,rootnum-1)))/rootnum;
 	
 	return Xn;

@@ -59,6 +59,9 @@
     <ClInclude Include="UHF\SanaeFile.h">
       <Filter>ヘッダー ファイル\UHF</Filter>
     </ClInclude>
+    <ClInclude Include="UHF\SanaeMatrix.h">
+      <Filter>ヘッダー ファイル\UHF</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UHF.cpp">

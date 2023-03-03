@@ -15,6 +15,8 @@
 /*INCLUDE*/
 #include "UHFC/SanaeC.h"
 #include "SanaeStr.h"
+#include "SanaeMatrix.h"
 #include "SanaeStatistics.h"
+#include "SanaeFile.h"
 
 #endif /* UHF_SANAE_H_ */

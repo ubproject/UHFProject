@@ -19,6 +19,7 @@
 #include "UHFC/SanaeWchar.h"
 #include "UHFC/SanaeTypes.h"
 
+
 /*class*/
 class str{
 private:

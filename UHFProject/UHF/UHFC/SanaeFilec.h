@@ -27,7 +27,6 @@ RETNUM FILEC_READ       (FILEC*      _data    , STRC*       _CopyTo);
 RETNUM FILEC_WRITE      (FILEC*      _data    , const char* _text    , const char* _mode);
 
 
-
 /*Functions*/
 /*指定されたファイルがあるかどうか判定します。
  */

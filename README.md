@@ -42,10 +42,14 @@ Sanae.h
     1.  stdio.h
     2.  SanaeStrc.h
 	3.	SanaeTypes.h
+- UHF/SanaeMatrix.h
+	1.	vector
+	2.	stdexcept
+	3.	UHFC/SanaeTypes.h
 - UHF/SanaeStatistics.h
 	1.	vector
 	2.	stdexcept
-	3.	SanaeTypes.h
+	3.	UHFC/SanaeTypes.h
 
 # 型/メンバ紹介
 # C++言語
@@ -112,7 +116,96 @@ Sanae.h
 	sample_str = "HelloWorld";
 	if (sample_str == "HelloWorld")			//true
 		printf("一致しました。\n");
+## SanaeMatrix.h
+###関数一覧:public
+	//コンストラクタ
+	matrix ();
+	matrix (Ulong, Ulong );
+	matrix (const matrix&);
+	~matrix();
+	
+	//オペレータ
+	_DataType& operator [](S_PAIR<Ulong, Ulong>);
+	matrix&    operator  =(S_PAIR<Ulong, Ulong>);
+	matrix&    operator  =(const matrix&);
+	matrix&    operator +=(const matrix&);
+	matrix&    operator -=(const matrix&);
+	matrix&    operator *=(const matrix&);
+	matrix     operator  +(const matrix&);
+	matrix     operator  -(const matrix&);
+	matrix     operator  *(const matrix&);
+	//スカラー倍
+	matrix     operator  *(_DataType);
+	matrix&    operator *=(_DataType);
 
+	//演算用関数
+	matrix&   add              (const matrix<_DataType>&);
+	matrix&   sub              (const matrix<_DataType>&);
+	matrix&   scalar_mul       (_DataType);
+	matrix&   mul              (const matrix<_DataType>&);
+	//行列操作用関数
+	matrix&   write_line       (Ulong, std::vector<_DataType>);
+	matrix&   replace_column   (Ulong, Ulong);
+	matrix&   replace_line     (Ulong, Ulong);
+	matrix    inverse          (void);
+	_DataType det              (void);
+	matrix&   to_identity      (void);
+	matrix    transpose        (void);
+	matrix&   view             (const char*);
+	matrix&   copy_matrix      (_DataType**);
+	matrix&   copy_array       (_DataType**, size_matrix);
+	
+	bool      is_holomorphic   (void);
+###使用例
+	//行列を扱う5*5行列
+	matrix test = { 5,5 };
+
+	test.write_line(0, { 3, 1, 1, 3, 0 });
+	test.write_line(1, { 5, 1, 3, 2, 2 });
+	test.write_line(2, { 2, 0, 1, 8, 1 });
+	test.write_line(3, { 0, 1, 3, 9, 3 });
+	test.write_line(4, { 2, 2, 5, 1, 5 });
+
+	test.view("%5.0lf ");
+
+	printf("行列式:%lg\n", test.det());//86
+
+	matrix buf = test;
+
+	//逆行列にする。
+	test.inverse();
+
+	//元の式と逆行列を掛けると単位行列になる。A*A^-1=1
+	(buf * test).view();
+
+	//9x+2y=13
+	//5x+9y=33をx,yについて解く
+	/*
+	9 2 * x = 13
+	5 9   y   33
+	   ↓
+	A * x = Z
+		y
+
+	A^-1*A=1より
+
+	x = A^-1*Z
+	y
+
+	これを解くことでx,yについて求めることができる。
+	*/
+	matrix z = { 1,2 };
+	z[{0, 0}] = 13;
+	z[{0, 1}] = 33;
+
+	matrix A = { 2,2 };
+	A.write_line(0, { 3,2 });
+	A.write_line(1, { 5,9 });
+
+	(A.inverse() * z).view();
+	// 3
+	// 2
+	//よってx=3,y=2である。
 ## SanaeFile.h
 	//ファイル名SanaeProject.log
 	file _file = "SanaeProject.log";
@@ -131,56 +224,6 @@ Sanae.h
 	printf("%s\n",text.c_str());     //Copyright 2016 SanaeProject
 
 ## SanaeStatistics.h
-	//行列を扱う5*5行列
-	matrix test = {5,5};
-	
-	test.write_line(0, {  3, 1, 1, 3, 0 });
-	test.write_line(1, {  5, 1, 3, 2, 2 });
-	test.write_line(2, {  2, 0, 1, 8, 1 });
-	test.write_line(3, {  0, 1, 3, 9, 3 });
-	test.write_line(4, {  2, 2, 5, 1, 5 });
-
-	test.view_matrix("%5.0lf ");
-
-	printf("行列式:%lg\n",test.det());//86
-
-	matrix buf = test;
-
-	//逆行列にする。
-	test.matrix_inverse();
-
-	//元の式と逆行列を掛けると単位行列になる。A*A^-1=1
-	(buf * test).view_matrix();
-	
-	//9x+2y=13
-	//5x+9y=33をx,yについて解く
-	/*
-	9 2 * x = 13
-	5 9   y   33
-	   ↓
-	A * x = Z
-	    y
-
-	A^-1*A=1より
-
-	x = A^-1*Z
-	y
-
-	これを解くことでx,yについて求めることができる。
-	*/
-	matrix z = {1,2};
-	z[{0, 0}] = 13;
-	z[{0, 1}] = 33;
-
-	matrix A = {2,2};
-	A.write_line(0, {3,2});
-	A.write_line(1, {5,9});
-
-	(A.matrix_inverse()*z).view_matrix();
-	// 3
-	// 2
-	//よってx=3,y=2である。
-
 	//92を素因数分解
 	UINT a = 92;
 	std::vector<UINT> test;
