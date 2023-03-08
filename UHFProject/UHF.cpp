@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include "UHF/Sanae.h"
-
+#include "UHF/SanaeID3.h"
 
 void SanaeStr() {
 	/*SanaeStr.hサンプルプログラム*/
@@ -147,10 +147,60 @@ void SanaeMatrix() {
 	// 2
 	//よってx=3,y=2である。
 }
+void id3() {
+	//データ
+	ID3 test = IN_ID3_NoTitle
+	{
+		{{"肉食","卵生","恒温"},"鳥類"  },
+		{{"肉食","胎生","恒温"},"哺乳類"},
+		{{"草食","胎生","恒温"},"哺乳類"},
+		{{"肉食","卵生","変温"},"爬虫類"},
+		{{"草食","卵生","恒温"},"鳥類"  }
+	};
+	//学習
+	test.fit();
+	//学習した決定木を出力する。
+	test.view_tree();
+	//学習したデータをファイルに出力
+	test.write();
+	//学習データに基づき判定する。
+	printf("判定:%s",test.get({"肉食","卵生","恒温"}).c_str());//鳥類
+	
+	system("pause");
+
+	//他の例
+	//データ
+	ID3 test2 = IN_ID3{
+	{
+		{"Outlook","temp","Humidity","Windy"},"PlayGolf"
+	},{
+		{{"rainy"   ,"hot" ,"high"  ,"false"},"no"},
+		{{"rainy"   ,"hot" ,"high"  ,"true" },"no"},
+		{{"overoact","hot" ,"high"  ,"false"},"yes"},
+		{{"sunny"   ,"mild","high"  ,"false"},"yes"},
+		{{"sunny"   ,"cool","normal","false"},"yes"},
+		{{"sunny"   ,"cool","normal","true" },"no" },
+		{{"overoact","cool","normal","true" },"yes"},
+		{{"rainy"   ,"mild","high"  ,"false"},"no" },
+		{{"rainy"   ,"cool","normal","false"},"yes"},
+		{{"sunny"   ,"mild","normal","false"},"yes"},
+		{{"rainy"   ,"mild","normal","true" },"yes"},
+		{{"overoact","mild","high"  ,"true" },"yes"},
+		{{"overoact","hot" ,"normal","false"},"yes"},
+		{{"sunny"   ,"mild","high"  ,"true" },"no" }
+	}
+	};
+	//学習
+	test2.fit();
+	//学習した決定木を出力する。
+	test2.view_tree();
+	//学習データに基づき判定する。
+	printf("判定:%s",test2.get({"sunny","mild","high","true"}).c_str());//no
+}
 int main() {
 	SanaeStrc();
 	SanaeStr ();
 	SanaeMatrix();
-
+	id3();
 	return 0;
 }

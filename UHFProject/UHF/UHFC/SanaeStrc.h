@@ -223,9 +223,9 @@ RETNUM STRC_CONNECT(STRC* _CopyTo, const char* _data1, const char* _data2){
 /*文字列を追加する。
  */
 RETNUM STRC_ADD(STRC* _data,const char* _text){
-	if(_data->_str == NULL)
+	if (_data->_str == NULL)
 		STRC_COPY(_data,"");
-
+		
 	if (FALSE == STRC_REALLOC(_data, _data->_allocated + strlen(_text) + 1))
 		return FALSE;
 

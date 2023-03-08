@@ -40,13 +40,13 @@ private:
 
 	void num_to_str(STRC* _data,Ulong _num) {
 		STRC_FREE(_data);
-
+		
 		num_array _d_buf = { NULL,0 };
 		to_array(&_d_buf, _num);
 
 		if (_d_buf._data == NULL)
 			error(2, "Failed to allocate.");
-
+		
 		Ulong digit_buf = get_digit(_num);
 		_data->_str = (char*)calloc(digit_buf + 1, sizeof(char));
 
@@ -57,8 +57,9 @@ private:
 
 		_data->_allocated = digit_buf + 1;
 
-		for (Ulong i = 0, j = (digit_buf - 1); i < _data->_allocated && j >= 0; i++, j--)
+		for (Ulong i = 0, j = (digit_buf - 1); i < _data->_allocated && j >= 0; i++, j--) {
 			this->_data._str[i] = ('0' + (MINI)_d_buf._data[j]);
+		}
 
 		//終端文字列設定
 		this->_data._str[this->_data._allocated - 1] = 0;
@@ -71,7 +72,7 @@ public:
 	str(){}
 	str(const char* _text){
 		if(FALSE == STRC_COPY(&_data,_text))
-			error(2,"Failed to Copy of _text.");
+			error(2,"Failed to Copy of _text:constractor.");
 	}
 	str(const wchar_t* _wtext){
 		if(FALSE == TO_STRC(&_data,_wtext))
@@ -81,9 +82,17 @@ public:
 		num_to_str(&this->_data,_num);
 	}
 	str(const str& _text){
+		/*
+		if (_text._data._str==NULL){
+			if (FALSE == STRC_COPY(&_data, ""))
+				error(2, "Failed to copy of _text:copyconstructor.");
+			return;
+		}
+		*/
 		if(FALSE == STRC_COPY(&_data,_text._data._str))
-			error(2,"Failed to copy of _text.");
+			error(2,"Failed to copy of _text:copyconstructor.");
 	}
+	
 	//Destructor
 	~str(){
 		STRC_FREE (&_data);
@@ -100,7 +109,7 @@ public:
 	}
 	str& operator =(const char* _text){
 		if(FALSE == STRC_COPY(&this->_data,_text))
-			error(2,"Failed to copy of _text");
+			error(2,"Failed to copy of _text:op=.");
 
 		return *this;
 	}
@@ -111,7 +120,7 @@ public:
 	}
 	str& operator =(const str& _text){
 		if(FALSE == STRC_COPY(&this->_data,_text._data._str))
-			error(2,"Failed to copy of _text");
+			error(2,"Failed to copy of _text:op=c.");
 
 		return *this;
 	}
@@ -128,6 +137,18 @@ public:
 		if(FALSE == STRC_ADD(&this->_data,_text._data._str))
 			error(2,"Failed to add.");
 		return *this;
+	}
+	str  operator +(const char* _text) {
+		str _buf = this->_data._str;
+		_buf.add(_text);
+
+		return _buf;
+	}
+	str  operator +(const str& _text) {
+		str _buf = this->_data._str;
+		_buf.add(_text._data._str);
+
+		return _buf;
 	}
 
 	/*if*/

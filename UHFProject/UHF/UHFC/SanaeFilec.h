@@ -32,9 +32,8 @@ RETNUM FILEC_WRITE      (FILEC*      _data    , const char* _text    , const cha
  */
 RETNUM FILEC_IS_EXISTING(const char* _filename){
 	FILE* _data = NULL;
-	fopen_s(&_data,_filename,"r");
 		
-	if(_data == NULL)
+	if(fopen_s(&_data, _filename, "r")!=0)
 		return FALSE;
 
 	fclose(_data);
@@ -59,10 +58,12 @@ void FILEC_MAKE(const char* _filename){
  * 一番最初にこの関数を設定してください。
  */
 RETNUM FILEC_START(FILEC* _data,const char* _filename){
+	fopen_s(&_data->file_pointer,_filename,"r");
 	if(STRC_COPY(&_data->filename,_filename) == FALSE){
 		fclose(_data->file_pointer);
 		return FALSE;
 	}
+	fclose(_data->file_pointer);
 	return TRUE;
 }
 
@@ -111,11 +112,12 @@ RETNUM FILEC_READ(FILEC* _data,STRC* _CopyTo){
 		for(Ulong i = 0;i<buf_size;i++){
 			if((buf[i] = getc(_data->file_pointer)) == EOF){
 				buf[i] = 0;
+
 				STRC_ADD(_CopyTo,buf);
 				free(buf);
 				fclose(_data->file_pointer);
 
-				return FALSE;
+				return TRUE;
 			}
 		}
 

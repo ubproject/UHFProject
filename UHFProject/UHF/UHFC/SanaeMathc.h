@@ -23,7 +23,8 @@
 Ulong  get_digit     (Ulong  _data);
 RETNUM IS_PRIMENUM   (Ulong  _data);
 double exponentiation(double _data, Slong  _count);
-double log_s         (double _data, double low_num,  Ulong accuracy);
+double _log_s        (Ulong _data , Ulong  low_num,  Ulong accuracy);
+double log_s         (double _data, Ulong  low_num,  Ulong accuracy);
 double root_newton   (Uint   _data, MINI   rootnum,  Ulong digitnum);
 double root          (Uint   _data, MINI   rootnum,  MINI  digitnum);
 void   SLCGs         (Ulong  _seed, Ulong  _count);
@@ -82,29 +83,43 @@ log low_num低の_dataを求めます。
 accuracyを精度として設定します。
 
 第三引数へ0を入れられた場合40に設定されます。
+無限小数の場合大きな誤差が生まれる可能性があります。
+・要修正。
 */
-double log_s(double _data, double low_num, Ulong accuracy) {
-	double _retdata  = 0;
-	Slong  minus_buf = 0;
+double log_s (double _data, Ulong low_num,Ulong accuracy) {
+	if (_data == (Ulong)_data)
+		return _log_s((Ulong)_data,low_num,accuracy);
 
-	for (; _data >= low_num; _data /= low_num, _retdata += 1);
+	Ulong _buf = 1;
 
-	if (_data == 1)
+	for (; _data != (Ulong)_data && _buf<=100000; _data *= 10, _buf *= 10);
+	
+	return _log_s((Ulong)_data, low_num, accuracy) - _log_s(_buf,low_num,accuracy);
+}
+double _log_s(Ulong _data, Ulong low_num, Ulong accuracy) {
+	double _buffer         = (double)_data;
+
+	double _retdata        = 0;
+	Slong  minus_buf       = 0;
+
+	for (; _buffer >= low_num; _buffer /= low_num, _retdata += 1);
+
+	if (_buffer == 1)
 		return _retdata;
 
 	if (accuracy == 0)
 		accuracy = 40;
 
 	for (Ulong i = 0; i <= accuracy; i++) {
-		if (_data >= low_num)
+		if (_buffer >= low_num)
 		{
-			_retdata += exponentiation(2, minus_buf);
-			_data    /= low_num;
+			_retdata += exponentiation((double)_data, minus_buf);
+			_buffer  /= low_num;
 		}
 		else
 		{
 			minus_buf -= 1;
-			_data      = exponentiation(_data, 2);
+			_buffer    = exponentiation(_buffer, _data);
 		}
 	}
 
@@ -286,6 +301,11 @@ RETNUM to_array(num_array* _array, Ulong _data) {
 
 	_array->_length = digit;
 
+	if (_data < 10) {
+		_array->_data[0] = (MINI)_data;
+		return TRUE;
+	}
+
 	/*ここから格納していく*/
 	for (Ulong i = 0; i < digit-1;i++) {
 		/*下の桁から取り出していく*/
@@ -295,7 +315,7 @@ RETNUM to_array(num_array* _array, Ulong _data) {
 		_array->_data[i] = (MINI)(buf - _data);
 		_data /= 10;
 
-		if (_data<10) {
+		if (_data < 10) {
 			_array->_data[i + 1] = (MINI)_data;
 			return TRUE;
 		}
