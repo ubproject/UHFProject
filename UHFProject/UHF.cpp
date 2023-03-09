@@ -148,7 +148,7 @@ void SanaeMatrix() {
 	//よってx=3,y=2である。
 }
 void id3() {
-	//データ
+	//データ:https://ja.wikipedia.org/wiki/ID3
 	ID3 test = IN_ID3_NoTitle
 	{
 		{{"肉食","卵生","恒温"},"鳥類"  },
@@ -164,29 +164,29 @@ void id3() {
 	//学習したデータをファイルに出力
 	test.write();
 	//学習データに基づき判定する。
-	printf("判定:%s",test.get({"肉食","卵生","恒温"}).c_str());//鳥類
+	printf("判定:%s",test.get({"草食","卵生","変温"}).c_str());//爬虫類
 	
 	system("pause");
 
 	//他の例
-	//データ
+	//データ:https://www.saedsayad.com/decision_tree.htm
 	ID3 test2 = IN_ID3{
 	{
 		{"Outlook","temp","Humidity","Windy"},"PlayGolf"
 	},{
 		{{"rainy"   ,"hot" ,"high"  ,"false"},"no"},
 		{{"rainy"   ,"hot" ,"high"  ,"true" },"no"},
-		{{"overoact","hot" ,"high"  ,"false"},"yes"},
+		{{"overcast","hot" ,"high"  ,"false"},"yes"},
 		{{"sunny"   ,"mild","high"  ,"false"},"yes"},
 		{{"sunny"   ,"cool","normal","false"},"yes"},
 		{{"sunny"   ,"cool","normal","true" },"no" },
-		{{"overoact","cool","normal","true" },"yes"},
+		{{"overcast","cool","normal","true" },"yes"},
 		{{"rainy"   ,"mild","high"  ,"false"},"no" },
 		{{"rainy"   ,"cool","normal","false"},"yes"},
 		{{"sunny"   ,"mild","normal","false"},"yes"},
 		{{"rainy"   ,"mild","normal","true" },"yes"},
-		{{"overoact","mild","high"  ,"true" },"yes"},
-		{{"overoact","hot" ,"normal","false"},"yes"},
+		{{"overcast","mild","high"  ,"true" },"yes"},
+		{{"overcast","hot" ,"normal","false"},"yes"},
 		{{"sunny"   ,"mild","high"  ,"true" },"no" }
 	}
 	};
@@ -196,11 +196,24 @@ void id3() {
 	test2.view_tree();
 	//学習データに基づき判定する。
 	printf("判定:%s",test2.get({"sunny","mild","high","true"}).c_str());//no
+	//学習データをファイルへ書き出し
+	test2.write();
+
+	system("pause");
+
+	//書き込んだデータを取り込む
+	ID3 test3;
+	test3.read();
+	printf("読み取ったデータ。\n");
+	test3.view_tree();
+	//学習データに基づき判定する。
+	printf("判定:%s", test3.get({ "sunny","mild","high","true" }).c_str());//no
 }
 int main() {
 	SanaeStrc();
 	SanaeStr ();
 	SanaeMatrix();
 	id3();
+
 	return 0;
 }

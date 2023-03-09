@@ -1,7 +1,11 @@
-
- 1==—‘¶ and 2==P‰·
-ret ’¹—Ş;
- 1==—‘¶ and 2==•Ï‰·
-ret à¦’—Ş;
- 1==‘Ù¶
-ret šM“û—Ş;
+par:Outlook,temp,Humidity,Windy;
+ Outlook==rainy and Humidity==high
+ret no;
+ Outlook==rainy and Humidity==normal
+ret yes;
+ Outlook==overcast
+ret yes;
+ Outlook==sunny and Windy==false
+ret yes;
+ Outlook==sunny and Windy==true
+ret no;

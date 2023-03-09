@@ -230,12 +230,10 @@ private:
 			_get.push_back(this->_quarry(&_buf2, _root + _name + "==" + _par_k[i]));
 		}
 
-
 		std::vector<str> _ret;
 		for (Ulong i = 0; i < _get.size();i++) {
-			for (Ulong j = 0; j < _get[i].size();j++) {
+			for (Ulong j = 0; j < _get[i].size();j++)
 				_ret.push_back(_get[i][j]);
-			}
 		}
 
 		return _ret;
@@ -252,8 +250,7 @@ public:
 		for (Ulong i = 0; i < _data[0]._parameter.size(); i++)
 			_title._parameter.push_back((str)i);
 	}
-	ID3(std::vector<str> title) {
-		this->_title._parameter = title;
+	ID3() {
 		_readonly = true;
 	}
 	ID3(const ID3& _data) {
@@ -277,7 +274,19 @@ public:
 	ID3& fit() {
 		if (!_readonly) {
 			IN_ID3           _buf = { _title,_main };
-			std::vector<str> _ret = this->_quarry(&_buf);
+			std::vector<str> _ret;
+
+			str _par = "par:";
+			for (Ulong i = 0; i < _title._parameter.size(); i++) {
+				_par += _title._parameter[i];
+				if ((i + 1) < _title._parameter.size())
+					_par += ",";
+				else
+					_par += ";";
+			}
+			
+			_ret = this->_quarry(&_buf);
+			_ret.insert(_ret.begin(), {_par});
 
 			_tree = _ret;
 		}
@@ -302,9 +311,18 @@ public:
 		for (Ulong i = 0; i < _tree.size();i++)
 			_tree[i].add(";");
 
+		if (_tree[0].find("par:")!=-1) {
+			_tree[0].erase_front(3);
+			_tree[0][strlen(_tree[0].c_str()) - 1] = 0;
+
+			_tree[0].division(&this->_title._parameter,',');
+		}
 		return *this;
 	}
 	str get(std::vector<str> _data) {
+		if (_data.size() != this->_title._parameter.size())
+			return "Defferent size of parameter.";
+
 		std::vector<str> _data_search;
 		
 		for (Ulong i = 0; i < _title._parameter.size() && i < _data.size(); i++)
@@ -351,6 +369,5 @@ public:
 		}
 		return *this;
 	}
-
 };
 #endif
