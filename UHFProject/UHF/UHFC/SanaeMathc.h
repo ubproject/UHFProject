@@ -23,8 +23,8 @@
 Ulong  get_digit     (Ulong  _data);
 RETNUM IS_PRIMENUM   (Ulong  _data);
 double exponentiation(double _data, Slong  _count);
-double _log_s        (Ulong _data , Ulong  low_num,  Ulong accuracy);
-double log_s         (double _data, Ulong  low_num,  Ulong accuracy);
+double log_s         (FRACTION_LOG _data, Ulong  low_num, Ulong accuracy);
+double _log_s        (Ulong  _data, Ulong  low_num,  Ulong accuracy);
 double root_newton   (Uint   _data, MINI   rootnum,  Ulong digitnum);
 double root          (Uint   _data, MINI   rootnum,  MINI  digitnum);
 void   SLCGs         (Ulong  _seed, Ulong  _count);
@@ -83,18 +83,12 @@ log low_num低の_dataを求めます。
 accuracyを精度として設定します。
 
 第三引数へ0を入れられた場合40に設定されます。
-無限小数の場合大きな誤差が生まれる可能性があります。
-・要修正。
 */
-double log_s (double _data, Ulong low_num,Ulong accuracy) {
-	if (_data == (Ulong)_data)
-		return _log_s((Ulong)_data,low_num,accuracy);
+double log_s (FRACTION_LOG _data, Ulong low_num,Ulong accuracy) {
+	if (_data.denominator == 1)
+		return _log_s(_data.molecule,low_num,accuracy);
 
-	Ulong _buf = 1;
-
-	for (; _data != (Ulong)_data && _buf<=100000; _data *= 10, _buf *= 10);
-	
-	return _log_s((Ulong)_data, low_num, accuracy) - _log_s(_buf,low_num,accuracy);
+	return _log_s(_data.molecule, low_num, accuracy) - _log_s(_data.denominator,low_num,accuracy);
 }
 double _log_s(Ulong _data, Ulong low_num, Ulong accuracy) {
 	double _buffer         = (double)_data;

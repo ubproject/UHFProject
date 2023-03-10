@@ -92,6 +92,14 @@ const WSTRC WSTRC_Init_Value = {NULL,0};
 #define SM_RANDOM_A 48271
 #define SM_RANDOM_M 2147483648-1
 
+//log関数用
+typedef struct {
+	//分子
+	Ulong molecule;
+	//分母
+	Ulong denominator;
+}FRACTION_LOG;
+
 struct LCGsT{
 	Ulong seed;
 	Ulong count;
